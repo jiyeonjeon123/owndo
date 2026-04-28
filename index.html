@@ -7,1058 +7,517 @@
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
   :root {
-    --primary:    #7A2624;
-    --secondary:  #954E2B;
-    --tertiary:   #4E560F;
-    --accent:     #909A30;
-    --ink:        #1f1d1b;
-    --ink-soft:   #4a443e;
-    --ink-faint:  #8a847a;
-    --line:       #e0dcd4;
-    --rule:       rgba(31, 29, 27, 0.10);
-    --cold:       #3a5a7a;
-    --cold-soft:  #7a96b4;
+    --bg:        #EEEDE9;
+    --bg-panel:  #E7E6E1;
+    --bg-panel2: #DFDDD7;
+    --ink:       #1a1916;
+    --ink-mid:   #3a3830;
+    --ink-soft:  #6a6858;
+    --ink-faint: #9a9888;
+    --line:      rgba(26,25,22,0.09);
+    --line-dk:   rgba(26,25,22,0.16);
+    --warm-1:    #7A2624;
+    --warm-2:    #954E2B;
+    --warm-3:    #4E560F;
+    --warm-4:    #909A30;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body {
+    background:var(--bg); color:var(--ink);
+    font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;
+    font-weight:400; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh; overflow-x:hidden;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html, body {
-    background: #ffffff;
-    color: var(--ink);
-    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-weight: 400;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
-
+  /* HEADER */
   header {
-    padding: 28px 48px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 1px solid var(--rule);
+    padding:22px 48px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom:1px solid var(--line);
+    background:var(--bg);
+    position:sticky; top:0; z-index:100;
   }
+  .logo-wrap svg { height:20px; width:auto; display:block; }
+  .meta { font-size:10px; color:var(--ink-faint); letter-spacing:0.1em; text-transform:uppercase; }
 
-  .brand {
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    color: var(--primary);
-  }
-  .brand sup { font-size: 0.5em; vertical-align: super; margin-left: 1px; }
-
-  .meta {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--ink-faint);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
+  /* PATIENT BAR */
   .patient-bar {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 28px 48px 24px;
-    display: grid;
-    grid-template-columns: auto 1fr 1fr 1fr;
-    gap: 24px;
-    align-items: end;
-    border-bottom: 1px solid var(--rule);
+    padding:16px 48px;
+    display:flex; gap:48px; align-items:end;
+    border-bottom:1px solid var(--line);
+    background:var(--bg-panel);
   }
+  .patient-tag { font-size:9px; letter-spacing:0.2em; color:var(--warm-4); text-transform:uppercase; font-weight:600; line-height:1.6; flex-shrink:0; }
+  .pf { display:flex; flex-direction:column; flex:1; max-width:170px; }
+  .pf label { font-size:10px; color:var(--ink-faint); letter-spacing:0.08em; margin-bottom:4px; text-transform:uppercase; font-weight:500; }
+  .pf input, .pf select {
+    background:transparent; border:none; border-bottom:1px solid var(--line-dk);
+    color:var(--ink); font-family:inherit; font-size:15px; font-weight:400;
+    padding:4px 0; outline:none; transition:border-color .2s;
+    -webkit-appearance:none; appearance:none;
+  }
+  .pf input:focus, .pf select:focus { border-color:var(--warm-3); }
+  .pf input::placeholder { color:transparent; }
+  .pf select option { background:var(--bg-panel); }
 
-  .patient-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    color: var(--accent);
-    text-transform: uppercase;
-    padding-bottom: 8px;
-    line-height: 1.4;
-  }
-
-  .patient-field { display: flex; flex-direction: column; }
-  .patient-field label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--ink-faint);
-    letter-spacing: 0.05em;
-    margin-bottom: 6px;
-  }
-  .patient-field input,
-  .patient-field select {
-    border: none;
-    border-bottom: 1px solid var(--ink);
-    background: transparent;
-    padding: 6px 0;
-    font-family: inherit;
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--ink);
-    outline: none;
-    width: 100%;
-    border-radius: 0;
-    -webkit-appearance: none;
-            appearance: none;
-  }
-  .patient-field input:focus,
-  .patient-field select:focus { border-color: var(--primary); }
-  .patient-field input::placeholder { color: var(--ink-faint); font-weight: 400; }
-
-  .patient-field.gender { position: relative; }
-  .patient-field.gender::after {
-    content: '⌄';
-    position: absolute;
-    right: 0;
-    bottom: 8px;
-    font-size: 14px;
-    color: var(--ink-faint);
-    pointer-events: none;
-  }
-
+  /* CONSOLE */
   .console {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 56px 48px 80px;
-    display: grid;
-    grid-template-columns: 380px 1fr 380px;
-    gap: 48px;
-    align-items: start;
+    max-width:1440px; margin:0 auto;
+    padding:36px 48px 64px;
+    display:grid; grid-template-columns:300px 1fr 300px; gap:28px;
+    align-items:stretch;
+  }
+  @media(max-width:1100px){
+    .console { grid-template-columns:1fr; padding:24px; }
+    .patient-bar { flex-wrap:wrap; padding:16px 24px; gap:16px; }
+    header { padding:18px 24px; }
   }
 
-  @media (max-width: 1100px) {
-    .console { grid-template-columns: 1fr; padding: 40px 24px; gap: 32px; }
-    .patient-bar { grid-template-columns: 1fr 1fr; padding: 24px; }
-  }
-
+  /* PANEL */
   .panel {
-    border: 1px solid var(--rule);
-    padding: 32px 28px;
+    background:var(--bg-panel); border:1px solid var(--line);
+    padding:22px 18px;
+    display:flex; flex-direction:column;
   }
+  .p-eye { font-size:9px; letter-spacing:0.22em; color:var(--warm-4); text-transform:uppercase; font-weight:600; margin-bottom:4px; }
+  .p-ttl { font-size:19px; font-weight:500; color:var(--ink); margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--line); letter-spacing:-0.02em; }
 
-  .panel-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
+  /* INPUTS */
+  .igrid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; flex:1; }
+  .ig { display:flex; flex-direction:column; }
+  .ig-lbl { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--warm-3); margin-bottom:2px; font-weight:600; }
+  .ig-dsc { font-size:10px; color:var(--ink-faint); margin-bottom:4px; }
+  .iwrap { display:flex; align-items:baseline; border-bottom:1px solid var(--line-dk); padding-bottom:3px; transition:border-color .2s; }
+  .iwrap:focus-within { border-color:var(--warm-3); }
+  .iwrap input { flex:1; background:transparent; border:none; color:var(--ink); font-family:inherit; font-size:19px; font-weight:300; letter-spacing:-0.02em; outline:none; padding:3px 0; width:100%; }
+  .iwrap input::-webkit-outer-spin-button, .iwrap input::-webkit-inner-spin-button { -webkit-appearance:none; }
+  .iwrap input[type=number] { -moz-appearance:textfield; }
+  .iwrap .unit { font-size:10px; color:var(--ink-faint); margin-left:3px; }
+  .slw { margin-top:5px; }
+  input[type="range"] { -webkit-appearance:none; width:100%; height:1px; background:var(--line-dk); outline:none; cursor:pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:9px; height:9px; background:var(--warm-3); border-radius:50%; cursor:pointer; transition:transform .15s; }
+  input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.5); }
+  input[type="range"]::-moz-range-thumb { width:9px; height:9px; background:var(--warm-3); border-radius:50%; border:none; cursor:pointer; }
 
-  .panel-title {
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--rule);
-    color: var(--ink);
+  /* EQ */
+  .eq {
+    background:var(--bg-panel2); border:1px solid var(--line);
+    padding:11px 13px; margin-top:auto;
+    font-size:10px; color:var(--ink-soft); line-height:2;
+    font-variant-numeric:tabular-nums;
   }
+  .eq .ev { color:var(--warm-2); font-weight:500; }
+  .eq .en { color:var(--warm-3); font-weight:600; }
+  .eq .el { display:inline-block; width:52px; font-size:9px; color:var(--ink-faint); }
 
-  .input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 22px;
-  }
+  /* VIZ */
+  .viz { display:flex; flex-direction:column; align-items:center; }
+  .viz-eye { font-size:9px; letter-spacing:0.25em; color:var(--ink-faint); text-transform:uppercase; font-weight:500; margin-bottom:20px; align-self:flex-start; }
+  .stage { width:100%; max-width:380px; aspect-ratio:1; position:relative; display:flex; align-items:center; justify-content:center; }
+  .stage::before { content:''; position:absolute; inset:7%; border:1px solid rgba(26,25,22,0.06); border-radius:50%; pointer-events:none; }
+  #o-canvas { width:100%; height:100%; }
 
-  .input-group { display: flex; flex-direction: column; }
-  .input-group label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--tertiary);
-    margin-bottom: 4px;
-  }
-  .input-group .desc {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--ink-faint);
-    margin-bottom: 8px;
-  }
+  /* DEGREE */
+  .deg-wrap { margin-top:28px; width:100%; max-width:380px; }
+  .deg-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; }
+  .deg-lbl { font-size:10px; letter-spacing:0.15em; color:var(--ink-faint); text-transform:uppercase; font-weight:500; }
+  .deg-val { font-size:58px; font-weight:200; color:var(--ink); letter-spacing:-0.05em; line-height:1; transition:all .5s cubic-bezier(.22,1,.36,1); }
+  .deg-val .dsym { font-size:.36em; vertical-align:super; color:var(--warm-3); font-weight:400; }
+  .deg-track { height:1px; background:var(--line-dk); position:relative; margin:7px 0 4px; }
+  .deg-fill { position:absolute; right:0; top:0; height:100%; background:linear-gradient(90deg,var(--warm-1),var(--warm-3),var(--warm-4)); transition:width .6s cubic-bezier(.22,1,.36,1); }
+  .deg-scale { display:flex; justify-content:space-between; font-size:9px; color:var(--ink-faint); letter-spacing:.04em; }
+  .deg-desc { margin-top:12px; font-size:13px; color:var(--ink-mid); line-height:1.8; padding-bottom:16px; border-bottom:1px solid var(--line); }
 
-  .input-wrap {
-    position: relative;
-    display: flex;
-    align-items: baseline;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 4px;
-  }
 
-  .input-wrap input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    font-family: inherit;
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--ink);
-    width: 100%;
-    outline: none;
-    padding: 4px 0;
-    letter-spacing: -0.02em;
-  }
-  .input-wrap input::-webkit-outer-spin-button,
-  .input-wrap input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  .input-wrap input[type=number] { -moz-appearance: textfield; }
 
-  .input-wrap .unit {
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--ink-faint);
-    margin-left: 4px;
-  }
+  /* RIGHT */
+  .types-lbl { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--warm-4); margin:0 0 10px; font-weight:600; }
+  .tc { border-top:1px solid var(--line); padding:10px 0; opacity:.28; transition:opacity .4s; }
+  .tc.active { opacity:.68; }
+  .tc.primary { opacity:1; }
+  .tc-head { display:flex; align-items:center; gap:8px; margin-bottom:3px; }
+  .tc-tag { font-size:8px; letter-spacing:.1em; padding:2px 6px; border:1px solid var(--line-dk); color:var(--ink-faint); transition:all .3s; font-weight:500; }
+  .tc.primary .tc-tag { border-color:var(--warm-3); color:var(--warm-3); background:rgba(78,86,15,.07); }
+  .tc-name { font-size:15px; font-weight:500; color:var(--ink); letter-spacing:-.01em; }
+  .tc-sub { font-size:10px; color:var(--ink-faint); margin-left:5px; font-weight:400; }
+  .tc-score { margin-left:auto; font-size:10px; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+  .tc.primary .tc-score { color:var(--warm-3); font-weight:600; }
+  .tc-desc { font-size:11px; color:var(--ink-soft); line-height:1.55; }
 
-  .slider-wrap { margin-top: 8px; }
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 1px;
-    background: var(--line);
-    outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 12px;
-    height: 12px;
-    background: var(--primary);
-    cursor: pointer;
-    border-radius: 50%;
-  }
-  input[type="range"]::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    background: var(--primary);
-    cursor: pointer;
-    border-radius: 50%;
-    border: none;
-  }
+  /* PRESCRIPTION */
+  .rx { margin-top:auto; background:var(--warm-1); padding:18px; position:relative; overflow:hidden; }
+  .rx::before { content:'°'; position:absolute; right:8px; top:0; font-size:80px; font-weight:200; color:rgba(255,255,255,.05); line-height:1; pointer-events:none; }
+  .rx-eye { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.36); margin-bottom:5px; font-weight:500; }
+  .rx-ttl { font-size:16px; font-weight:500; color:#fff; margin-bottom:7px; letter-spacing:-.01em; }
+  .rx-body { font-size:12px; line-height:1.75; color:rgba(255,255,255,.72); }
+  .rx-body strong { color:#fff; font-weight:600; }
 
-  .presets { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--rule); }
-  .preset-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-  .preset-btn {
-    background: transparent;
-    border: 1px solid var(--rule);
-    padding: 12px 16px;
-    text-align: left;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink-soft);
-    transition: all 0.25s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 0;
-  }
-  .preset-btn:hover { border-color: var(--accent); color: var(--ink); }
-  .preset-btn .arrow { color: var(--accent); font-weight: 600; }
+  /* FOOTER */
+  footer { border-top:1px solid var(--line); padding:16px 48px; display:flex; justify-content:space-between; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); }
 
-  .viz {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 8px 0;
-  }
-
-  .viz-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.25em;
-    color: var(--ink-faint);
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-
-  .stage {
-    width: 100%;
-    max-width: 480px;
-    aspect-ratio: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .stage::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    opacity: 0.7;
-  }
-  .stage::after {
-    content: 'e = 0  ·  Original Degree°';
-    position: absolute;
-    bottom: -28px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    color: var(--ink-faint);
-    white-space: nowrap;
-  }
-
-  #ellipse-svg {
-    width: 100%;
-    height: 100%;
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .equation {
-    margin-top: 64px;
-    padding: 24px 28px;
-    border: 1px solid var(--rule);
-    font-family: 'JetBrains Mono', 'Pretendard Variable', Pretendard, monospace;
-    font-size: 13px;
-    color: var(--ink-soft);
-    line-height: 2;
-    width: 100%;
-    max-width: 520px;
-  }
-  .equation .var { color: var(--secondary); font-weight: 500; }
-  .equation .num { color: var(--primary); font-weight: 600; }
-  .equation .lbl {
-    display: inline-block;
-    width: 100px;
-    color: var(--ink-faint);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-  }
-
-  .e-display {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    margin-bottom: 4px;
-  }
-  .e-value {
-    font-size: 76px;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.05em;
-    color: var(--primary);
-  }
-  .e-label {
-    font-size: 18px;
-    font-weight: 400;
-    color: var(--ink-faint);
-    letter-spacing: -0.01em;
-  }
-
-  .e-bar {
-    margin: 16px 0 4px;
-    height: 2px;
-    background: var(--line);
-    position: relative;
-    overflow: hidden;
-  }
-  .e-bar-fill {
-    position: absolute;
-    left: 0; top: 0;
-    height: 100%;
-    background: var(--primary);
-    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .e-scale {
-    display: flex;
-    justify-content: space-between;
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--ink-faint);
-    letter-spacing: 0.1em;
-  }
-
-  .e-desc {
-    margin-top: 16px;
-    font-size: 14px;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .types-section { margin-top: 24px; }
-  .types-title {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  .type-card {
-    border-top: 1px solid var(--rule);
-    padding: 14px 0;
-    transition: all 0.3s ease;
-    opacity: 0.4;
-  }
-  .type-card.active { opacity: 1; }
-  .type-card.primary { opacity: 1; }
-  .type-card.primary .type-num {
-    background: var(--primary);
-    color: #ffffff;
-    border-color: var(--primary);
-  }
-  .type-card.primary .type-name { color: var(--primary); }
-
-  .type-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 4px;
-  }
-  .type-num {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    padding: 3px 7px;
-    border: 1px solid var(--ink);
-    color: var(--ink);
-    transition: all 0.3s;
-  }
-  .type-name {
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-  .type-name .han {
-    color: var(--ink-faint);
-    font-size: 12px;
-    font-weight: 400;
-    margin-left: 6px;
-  }
-  .type-score {
-    margin-left: auto;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--ink-faint);
-    font-variant-numeric: tabular-nums;
-  }
-  .type-card.active .type-score { color: var(--secondary); }
-  .type-card.primary .type-score { color: var(--primary); font-weight: 700; }
-  .type-desc {
-    font-size: 12px;
-    color: var(--ink-faint);
-    line-height: 1.5;
-  }
-
-  .prescription {
-    margin-top: 28px;
-    padding: 22px;
-    background: var(--primary);
-    color: #ffffff;
-  }
-  .presc-label {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.55);
-    margin-bottom: 8px;
-  }
-  .presc-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    letter-spacing: -0.02em;
-  }
-  .presc-body {
-    font-size: 13px;
-    line-height: 1.7;
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .presc-body strong { color: #ffffff; font-weight: 600; }
-
-  footer {
-    border-top: 1px solid var(--rule);
-    padding: 28px 48px;
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--ink-faint);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .console>*{ animation:fadeUp .65s cubic-bezier(.22,1,.36,1) both; }
+  .console>*:nth-child(1){animation-delay:.05s}
+  .console>*:nth-child(2){animation-delay:.14s}
+  .console>*:nth-child(3){animation-delay:.23s}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">owndo<sup>°</sup></div>
-  <div class="meta">Thermal Diagnostic Engine · v1.0</div>
+  <div class="logo-wrap">
+    <svg viewBox="0 0 1535 464" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="owndo°">
+      <path d="M148.666 162.227C191.654 162.227 224.69 175.163 247.776 201.035C271.26 226.907 283.002 261.536 283.002 304.922C283.002 348.308 268.872 385.524 240.611 416.57C212.351 447.617 177.324 463.141 135.53 463.141C93.7369 463.141 60.6999 450.005 36.4199 423.735C12.1398 397.067 0 362.437 0 319.848C8.35988e-05 276.86 14.1304 239.843 42.3906 208.797C70.651 177.75 106.076 162.227 148.666 162.227ZM1324.84 5.9707C1323.65 17.5136 1323.05 34.0319 1323.05 55.5254V351.066C1323.05 368.978 1325.83 386.093 1331.41 402.412C1336.98 418.333 1344.14 429.279 1352.9 435.25L1354.1 441.221L1289.02 456.744C1285.04 446.793 1280.06 430.474 1274.09 407.786C1243.44 437.639 1213.99 452.564 1185.73 452.564C1144.33 452.564 1113.48 438.634 1093.18 410.771C1072.88 382.511 1062.73 347.086 1062.73 304.496C1062.73 261.906 1075.67 225.884 1101.54 196.43C1127.81 166.975 1160.85 152.248 1200.65 152.248C1222.94 152.248 1245.03 156.029 1266.93 163.592V95.5283C1266.93 63.6858 1257.77 39.0076 1239.46 21.4941V14.3291L1321.26 0L1324.84 5.9707ZM361.521 165.229C361.522 178.881 371.078 213.013 390.191 267.623L429.395 381.134C459.82 293.758 478.934 234.272 486.735 202.676C478.934 184.342 473.277 173.81 469.767 171.079V164.059L545.246 159.962V166.983C545.246 178.296 555.193 213.208 575.087 271.719L609.519 384.06C635.263 304.875 650.281 256.895 654.572 240.122C662.764 212.817 666.859 189.218 666.859 169.324V162.303H727.801V169.324C718.049 178.296 708.687 197.215 699.715 226.08L641.204 417.411L633.598 448.422L578.598 449.592L568.65 416.24L508.384 260.017L455.725 417.411L449.288 448.422L393.702 449.592L383.756 416.24L307.106 223.739C296.184 195.264 286.237 178.101 277.266 172.25V165.229L361.521 158.207V165.229ZM824.577 157.623C827.761 172.35 830.15 187.276 831.742 202.401C846.469 190.859 857.813 182.301 865.773 176.729C874.132 171.156 884.681 165.783 897.418 160.608C910.155 155.036 922.295 152.249 933.838 152.249C962.496 152.249 984.587 161.404 1000.11 179.714C1016.03 198.023 1023.99 224.294 1023.99 258.524V344.5C1023.99 382.313 1029.96 414.753 1041.9 441.819V445.998H957.72V441.819C964.486 421.918 967.869 395.448 967.869 362.411V271.062C967.869 247.977 964.288 230.662 957.123 219.119C950.356 207.178 936.425 201.208 915.329 201.208C894.233 201.208 867.167 211.357 834.13 231.657V344.5C834.13 383.109 839.901 415.549 851.444 441.819V445.998H771.857V441.819C778.624 421.918 782.007 395.448 782.007 362.411V260.913C782.007 243.798 778.425 227.08 771.261 210.761C764.494 194.043 756.533 182.898 747.378 177.325L746.781 170.161L820.995 151.652L824.577 157.623ZM135.53 196.259C115.231 196.259 99.3095 200.637 87.7666 209.394C80.602 218.548 74.6309 232.48 69.8545 251.188C65.4762 269.895 63.2871 287.807 63.2871 304.922C63.2871 388.111 92.7424 429.705 151.651 429.705C169.961 429.705 184.887 425.526 196.43 417.167C203.992 408.012 209.764 393.882 213.744 374.776C217.724 355.671 219.715 337.361 219.715 319.848C219.715 280.442 213.545 249.993 201.206 228.499C188.867 207.005 166.975 196.259 135.53 196.259ZM1189.31 188.668C1171.4 188.668 1157.67 192.25 1148.11 199.415C1133.39 222.899 1126.02 255.339 1126.02 296.734C1126.02 338.13 1136.57 369.376 1157.67 390.472C1169.21 402.413 1184.93 408.383 1204.83 408.383C1224.73 408.383 1245.43 398.83 1266.93 379.725V211.356C1246.23 196.231 1220.36 188.668 1189.31 188.668ZM1457.23 30.3008C1481.83 30.3008 1500.74 37.7382 1513.96 52.6123C1527.4 67.4866 1534.12 87.3957 1534.12 112.339C1534.12 137.282 1526.04 158.678 1509.86 176.527C1493.68 194.376 1473.63 203.301 1449.71 203.301C1425.78 203.301 1406.87 195.75 1392.97 180.646C1379.07 165.314 1372.13 145.405 1372.12 120.92C1372.12 96.2056 1380.21 74.9234 1396.39 57.0742C1412.57 39.2251 1432.85 30.3008 1457.23 30.3008ZM1449.71 49.8662C1438.09 49.8662 1428.97 52.3836 1422.37 57.418C1418.26 62.6812 1414.85 70.6903 1412.11 81.4453C1409.61 92.2006 1408.35 102.499 1408.35 112.339C1408.35 160.165 1425.21 184.078 1458.94 184.078C1469.42 184.078 1477.96 181.676 1484.57 176.87C1488.9 171.607 1492.2 163.483 1494.48 152.499C1496.76 141.515 1497.9 130.989 1497.9 120.92C1497.9 98.2652 1494.37 80.7595 1487.3 68.4023C1480.24 56.0452 1467.71 49.8662 1449.71 49.8662Z" fill="#1a1916"/>
+    </svg>
+  </div>
+  <div class="meta">Thermal Diagnostic · v2.0</div>
 </header>
 
-<section class="patient-bar">
-  <div class="patient-label">Patient<br>Profile</div>
-  <div class="patient-field">
-    <label>이름 / Name</label>
-    <input type="text" id="p-name" placeholder="이지연">
-  </div>
-  <div class="patient-field">
-    <label>나이 / Age</label>
-    <input type="number" id="p-age" placeholder="29" min="0" max="120">
-  </div>
-  <div class="patient-field gender">
-    <label>성별 / Gender</label>
+<div class="patient-bar">
+  <div class="patient-tag">Patient<br>Profile</div>
+  <div class="pf"><label>Name</label><input type="text" id="p-name" placeholder=" "></div>
+  <div class="pf"><label>Age</label><input type="number" id="p-age" placeholder=" " min="0" max="120"></div>
+  <div class="pf">
+    <label>Gender</label>
     <select id="p-gender">
-      <option value="">선택</option>
-      <option value="여성">여성</option>
-      <option value="남성">남성</option>
-      <option value="기타">기타</option>
+      <option value="">—</option>
+      <option>Female</option><option>Male</option><option>Other</option>
     </select>
   </div>
-</section>
+</div>
 
 <section class="console">
 
+  <!-- LEFT -->
   <div class="panel">
-    <div class="panel-label">Step 01 · Input</div>
-    <div class="panel-title">열화상 온도값</div>
-
-    <div class="input-row">
-      <div class="input-group">
-        <label>T_L</label>
-        <div class="desc">좌측 평균</div>
-        <div class="input-wrap">
-          <input type="number" id="tl" value="36.8" step="0.1" min="32" max="40">
-          <span class="unit">°C</span>
-        </div>
-        <div class="slider-wrap">
-          <input type="range" data-target="tl" min="32" max="40" step="0.1" value="36.8">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>T_R</label>
-        <div class="desc">우측 평균</div>
-        <div class="input-wrap">
-          <input type="number" id="tr" value="35.0" step="0.1" min="32" max="40">
-          <span class="unit">°C</span>
-        </div>
-        <div class="slider-wrap">
-          <input type="range" data-target="tr" min="32" max="40" step="0.1" value="35.0">
-        </div>
-      </div>
+    <div class="p-eye">Step 01 · Input</div>
+    <div class="p-ttl">열화상 온도값</div>
+    <div class="igrid">
+      <div class="ig"><div class="ig-lbl">T_L</div><div class="ig-dsc">좌측 평균</div><div class="iwrap"><input type="number" id="tl" value="36.8" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="tl" min="32" max="40" step="0.1" value="36.8"></div></div>
+      <div class="ig"><div class="ig-lbl">T_R</div><div class="ig-dsc">우측 평균</div><div class="iwrap"><input type="number" id="tr" value="35.0" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="tr" min="32" max="40" step="0.1" value="35.0"></div></div>
+      <div class="ig"><div class="ig-lbl">T_U</div><div class="ig-dsc">상체 평균</div><div class="iwrap"><input type="number" id="tu" value="37.1" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="tu" min="32" max="40" step="0.1" value="37.1"></div></div>
+      <div class="ig"><div class="ig-lbl">T_D</div><div class="ig-dsc">하체 평균</div><div class="iwrap"><input type="number" id="td" value="34.8" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="td" min="32" max="40" step="0.1" value="34.8"></div></div>
+      <div class="ig"><div class="ig-lbl">T_S</div><div class="ig-dsc">표면 평균</div><div class="iwrap"><input type="number" id="ts" value="36.0" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="ts" min="32" max="40" step="0.1" value="36.0"></div></div>
+      <div class="ig"><div class="ig-lbl">T_C</div><div class="ig-dsc">심부 추정</div><div class="iwrap"><input type="number" id="tc" value="35.8" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="tc" min="32" max="40" step="0.1" value="35.8"></div></div>
     </div>
-
-    <div class="input-row">
-      <div class="input-group">
-        <label>T_U</label>
-        <div class="desc">상체 평균</div>
-        <div class="input-wrap">
-          <input type="number" id="tu" value="37.1" step="0.1" min="32" max="40">
-          <span class="unit">°C</span>
-        </div>
-        <div class="slider-wrap">
-          <input type="range" data-target="tu" min="32" max="40" step="0.1" value="37.1">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>T_D</label>
-        <div class="desc">하체 평균</div>
-        <div class="input-wrap">
-          <input type="number" id="td" value="34.8" step="0.1" min="32" max="40">
-          <span class="unit">°C</span>
-        </div>
-        <div class="slider-wrap">
-          <input type="range" data-target="td" min="32" max="40" step="0.1" value="34.8">
-        </div>
-      </div>
-    </div>
-
-    <div class="input-row">
-      <div class="input-group">
-        <label>T_S</label>
-        <div class="desc">표면 평균</div>
-        <div class="input-wrap">
-          <input type="number" id="ts" value="36.0" step="0.1" min="32" max="40">
-          <span class="unit">°C</span>
-        </div>
-        <div class="slider-wrap">
-          <input type="range" data-target="ts" min="32" max="40" step="0.1" value="36.0">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>T_C</label>
-        <div class="desc">심부 추정</div>
-        <div class="input-wrap">
-          <input type="number" id="tc" value="35.8" step="0.1" min="32" max="40">
-          <span class="unit">°C</span>
-        </div>
-        <div class="slider-wrap">
-          <input type="range" data-target="tc" min="32" max="40" step="0.1" value="35.8">
-        </div>
-      </div>
-    </div>
-
-    <div class="presets">
-      <div class="panel-label">Preset Cases</div>
-      <div class="preset-btns">
-        <button class="preset-btn" data-preset="jiyeon">
-          <span>이지연 — 29세 직장인 (복합형)</span><span class="arrow">↗</span>
-        </button>
-        <button class="preset-btn" data-preset="balanced">
-          <span>균형 상태 — Original Degree°</span><span class="arrow">↗</span>
-        </button>
-        <button class="preset-btn" data-preset="lr">
-          <span>좌우한열 (TYPE 01)</span><span class="arrow">↗</span>
-        </button>
-        <button class="preset-btn" data-preset="ud">
-          <span>상열하한 (TYPE 02)</span><span class="arrow">↗</span>
-        </button>
-        <button class="preset-btn" data-preset="sc">
-          <span>표열이한 (TYPE 03)</span><span class="arrow">↗</span>
-        </button>
-        <button class="preset-btn" data-preset="def">
-          <span>허한 (TYPE 04)</span><span class="arrow">↗</span>
-        </button>
+    <div class="eq">
+      <div><span class="el">δ_LR</span>= |<span class="ev">T_L</span>−<span class="ev">T_R</span>|/2 = <span class="en" id="eq-lr">—</span></div>
+      <div><span class="el">δ_UD</span>= |<span class="ev">T_U</span>−<span class="ev">T_D</span>|/2 = <span class="en" id="eq-ud">—</span></div>
+      <div><span class="el">δ_SC</span>= |<span class="ev">T_S</span>−<span class="ev">T_C</span>|/2 = <span class="en" id="eq-sc">—</span></div>
+      <div><span class="el">δ_허</span>= max(0,(36.5−T̄)/2) = <span class="en" id="eq-def">—</span></div>
+      <div style="border-top:1px solid var(--line);margin-top:5px;padding-top:5px">
+        <span class="el">e</span>= <span class="en" id="eq-e">—</span> → Degree° = <span class="en" id="eq-deg">—</span>
       </div>
     </div>
   </div>
 
+  <!-- CENTER -->
   <div class="viz">
-    <div class="viz-label">Layer 01 — Form  ·  Layer 02 — Gradient</div>
-    <div class="stage">
-      <svg id="ellipse-svg" viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="grad-default" x1="50%" y1="0%" x2="50%" y2="100%">
-            <stop offset="0%" stop-color="#7A2624" stop-opacity="0.92"/>
-            <stop offset="100%" stop-color="#3a5a7a" stop-opacity="0.75"/>
-          </linearGradient>
-        </defs>
-        <ellipse id="main-ellipse" cx="0" cy="0" rx="80" ry="80"
-          fill="url(#grad-default)" stroke="#1f1d1b" stroke-width="0.8"/>
-        <circle id="center-dot" cx="0" cy="0" r="2" fill="#1f1d1b" opacity="0.4"/>
-      </svg>
-    </div>
-
-    <div class="equation">
-      <div><span class="lbl">δ_LR</span>= |<span class="var">T_L</span> − <span class="var">T_R</span>| / 2.0 = <span class="num" id="eq-lr">0.900</span></div>
-      <div><span class="lbl">δ_UD</span>= |<span class="var">T_U</span> − <span class="var">T_D</span>| / 2.0 = <span class="num" id="eq-ud">1.000</span></div>
-      <div><span class="lbl">δ_SC</span>= |<span class="var">T_S</span> − <span class="var">T_C</span>| / 2.0 = <span class="num" id="eq-sc">0.100</span></div>
-      <div><span class="lbl">δ_허</span>= max(0, (36.5 − T̄)/2.0) = <span class="num" id="eq-def">0.275</span></div>
-      <div style="border-top: 1px solid var(--rule); margin-top: 10px; padding-top: 10px;">
-        <span class="lbl">e</span>= min(√(δ²+δ²+δ²)/√3 × (1+δ_허), 0.99)
+    <div class="viz-eye">The O° · Form × Gradient</div>
+    <div class="stage"><canvas id="o-canvas" width="460" height="460"></canvas></div>
+    <div class="deg-wrap">
+      <div class="deg-row">
+        <div class="deg-lbl">Degree°</div>
+        <div class="deg-val"><span id="degree-num">—</span><span class="dsym">°</span></div>
       </div>
-      <div><span class="lbl"></span>= <span class="num" id="eq-e">0.000</span></div>
+      <div class="deg-track"><div class="deg-fill" id="degree-fill" style="width:0%"></div></div>
+      <div class="deg-scale"><span>0° 불균형</span><span>50°</span><span>100° Original Degree°</span></div>
+      <div class="deg-desc" id="degree-desc">온도값을 입력하면 진단이 시작됩니다.</div>
+
     </div>
   </div>
 
+  <!-- RIGHT -->
   <div class="panel">
-    <div class="panel-label">Step 02 · Diagnosis</div>
+    <div class="p-eye">Step 02 · Diagnosis</div>
+    <div class="p-ttl">상태 판독</div>
+    <div class="types-lbl">Pattern Match · 5 States</div>
 
-    <div class="e-display">
-      <div class="e-value" id="result-e">0.00</div>
-      <div class="e-label">eccentricity</div>
+    <div class="tc" data-type="01">
+      <div class="tc-head"><span class="tc-tag">01</span><span class="tc-name">Off-Center<span class="tc-sub">좌우한열</span></span><span class="tc-score" id="score-01">—</span></div>
+      <div class="tc-desc">중심이 한쪽으로 기울어져 있습니다. 열이 어느 한 방향에 쏠려, 몸이 자신의 축을 잃은 상태입니다.</div>
     </div>
-    <div class="e-bar">
-      <div class="e-bar-fill" id="e-bar-fill" style="width: 0%;"></div>
+    <div class="tc" data-type="02">
+      <div class="tc-head"><span class="tc-tag">02</span><span class="tc-name">Ascending<span class="tc-sub">수승화강 불균형</span></span><span class="tc-score" id="score-02">—</span></div>
+      <div class="tc-desc">열이 위로 몰려 있습니다. 머리는 뜨거운데 발은 식어 있는, 흐름이 거꾸로 된 상태입니다.</div>
     </div>
-    <div class="e-scale">
-      <span>0 · 원</span>
-      <span>0.5 · 중간</span>
-      <span>1 · 납작</span>
+    <div class="tc" data-type="03">
+      <div class="tc-head"><span class="tc-tag">03</span><span class="tc-name">Unreached<span class="tc-sub">표열이한</span></span><span class="tc-score" id="score-03">—</span></div>
+      <div class="tc-desc">열이 표면에 머물러 있습니다. 겉은 따뜻해 보이지만, 온기가 몸 안까지 닿지 못한 상태입니다.</div>
     </div>
-    <div class="e-desc" id="e-desc">
-      균형에 가까운 상태입니다. Original Degree°에 도달했어요.
+    <div class="tc" data-type="04">
+      <div class="tc-head"><span class="tc-tag">04</span><span class="tc-name">Fading<span class="tc-sub">허한</span></span><span class="tc-score" id="score-04">—</span></div>
+      <div class="tc-desc">몸 전체가 조용히 꺼져가고 있습니다. 열을 만들어낼 에너지 자체가 부족한 상태입니다.</div>
     </div>
-
-    <div class="types-section">
-      <div class="types-title">Type Match · 5 patterns</div>
-
-      <div class="type-card" data-type="01">
-        <div class="type-head">
-          <span class="type-num">01</span>
-          <span class="type-name">좌우한열<span class="han">左右寒熱</span></span>
-          <span class="type-score" id="score-01">0.00</span>
-        </div>
-        <div class="type-desc">음양 불균형. 가로 장축. 좌우 색차.</div>
-      </div>
-
-      <div class="type-card" data-type="02">
-        <div class="type-head">
-          <span class="type-num">02</span>
-          <span class="type-name">수승화강<span class="han">上熱下寒</span></span>
-          <span class="type-score" id="score-02">0.00</span>
-        </div>
-        <div class="type-desc">상열하한. 세로 장축. 위→아래 그라디언트.</div>
-      </div>
-
-      <div class="type-card" data-type="03">
-        <div class="type-head">
-          <span class="type-num">03</span>
-          <span class="type-name">표열이한<span class="han">表熱裏寒</span></span>
-          <span class="type-score" id="score-03">0.00</span>
-        </div>
-        <div class="type-desc">표면은 따뜻, 심부는 차가움. 반경 그라디언트.</div>
-      </div>
-
-      <div class="type-card" data-type="04">
-        <div class="type-head">
-          <span class="type-num">04</span>
-          <span class="type-name">허한<span class="han">虛寒</span></span>
-          <span class="type-score" id="score-04">0.00</span>
-        </div>
-        <div class="type-desc">전체 저온. 점선 테두리, 낮은 채도.</div>
-      </div>
-
-      <div class="type-card" data-type="05">
-        <div class="type-head">
-          <span class="type-num">05</span>
-          <span class="type-name">Original Degree°<span class="han">균형</span></span>
-          <span class="type-score" id="score-05">0.00</span>
-        </div>
-        <div class="type-desc">완전한 원. e = 0. 도달 목표.</div>
-      </div>
+    <div class="tc" data-type="05">
+      <div class="tc-head"><span class="tc-tag">05</span><span class="tc-name">Original Degree°<span class="tc-sub">균형</span></span><span class="tc-score" id="score-05">—</span></div>
+      <div class="tc-desc">당신 몸 본연의 온도입니다. 좌우가 고르고, 온기가 심부까지 가득 찬 완전한 균형의 상태입니다.</div>
     </div>
 
-    <div class="prescription">
-      <div class="presc-label">Treatment · 뜸 처방</div>
-      <div class="presc-title" id="presc-title">Original Degree° 유지</div>
-      <div class="presc-body" id="presc-body">
-        균형 상태입니다. 정기적 스캔으로 상태를 모니터링하세요.
-      </div>
+    <div class="rx">
+      <div class="rx-eye">Treatment · 뜸 처방</div>
+      <div class="rx-ttl" id="presc-title">—</div>
+      <div class="rx-body" id="presc-body">온도값을 입력하면 처방이 생성됩니다.</div>
     </div>
   </div>
 
 </section>
 
 <footer>
-  <span>Layer 1: Form (e)  ·  Layer 2: Gradient (vector)</span>
-  <span>°  =  TEMPERATURE  ∩  ANGLE</span>
+  <span>The O° · Form (e) × Gradient (vector)</span>
+  <span>° = Temperature ∩ Angle ∩ Original</span>
 </footer>
 
 <script>
-const T_REF = 36.5;
-const NORM = 2.0;
+const T_REF=36.5, NORM=2.0;
+const $=id=>document.getElementById(id);
 
-const COLOR = {
-  primary:   '#7A2624',
-  secondary: '#954E2B',
-  tertiary:  '#4E560F',
-  accent:    '#909A30',
-  cold:      '#3a5a7a',
-  coldSoft:  '#7a96b4',
-};
-
-const els = {
-  tl: document.getElementById('tl'),
-  tr: document.getElementById('tr'),
-  tu: document.getElementById('tu'),
-  td: document.getElementById('td'),
-  ts: document.getElementById('ts'),
-  tc: document.getElementById('tc'),
-  ellipse: document.getElementById('main-ellipse'),
-  centerDot: document.getElementById('center-dot'),
-  resultE: document.getElementById('result-e'),
-  eBarFill: document.getElementById('e-bar-fill'),
-  eDesc: document.getElementById('e-desc'),
-  eqLr: document.getElementById('eq-lr'),
-  eqUd: document.getElementById('eq-ud'),
-  eqSc: document.getElementById('eq-sc'),
-  eqDef: document.getElementById('eq-def'),
-  eqE: document.getElementById('eq-e'),
-  prescTitle: document.getElementById('presc-title'),
-  prescBody: document.getElementById('presc-body'),
-};
-
-const PRESETS = {
-  jiyeon:   { tl: 36.8, tr: 35.0, tu: 37.1, td: 34.8, ts: 36.0, tc: 35.8, name: '이지연', age: 29, gender: '여성' },
-  balanced: { tl: 36.5, tr: 36.5, tu: 36.5, td: 36.5, ts: 36.5, tc: 36.5 },
-  lr:       { tl: 37.5, tr: 35.5, tu: 36.5, td: 36.5, ts: 36.5, tc: 36.5 },
-  ud:       { tl: 36.5, tr: 36.5, tu: 37.7, td: 35.3, ts: 36.5, tc: 36.5 },
-  sc:       { tl: 36.5, tr: 36.5, tu: 36.5, td: 36.5, ts: 37.4, tc: 35.6 },
-  def:      { tl: 35.0, tr: 34.8, tu: 35.2, td: 34.7, ts: 35.0, tc: 34.9 },
-};
-
-function readInputs() {
-  return {
-    TL: parseFloat(els.tl.value) || 36.5,
-    TR: parseFloat(els.tr.value) || 36.5,
-    TU: parseFloat(els.tu.value) || 36.5,
-    TD: parseFloat(els.td.value) || 36.5,
-    TS: parseFloat(els.ts.value) || 36.5,
-    TC: parseFloat(els.tc.value) || 36.5,
-  };
+function readT(){
+  const v=k=>parseFloat($(k).value)||36.5;
+  return{TL:v('tl'),TR:v('tr'),TU:v('tu'),TD:v('td'),TS:v('ts'),TC:v('tc')};
 }
-
-function compute(t) {
-  const dLR = Math.abs(t.TL - t.TR) / NORM;
-  const dUD = Math.abs(t.TU - t.TD) / NORM;
-  const dSC = Math.abs(t.TS - t.TC) / NORM;
-  const Tavg = (t.TL + t.TR + t.TU + t.TD) / 4;
-  const dDef = Math.max(0, (T_REF - Tavg) / NORM);
-  const k = 1 + dDef;
-  const magnitude = Math.sqrt(dLR*dLR + dUD*dUD + dSC*dSC);
-  const e = Math.min(magnitude / Math.sqrt(3) * k, 0.99);
-
-  const totalAxial = dLR + dUD + dSC || 0.001;
-  const score01 = Math.min(dLR / Math.max(totalAxial, 0.5), 1);
-  const score02 = Math.min(dUD / Math.max(totalAxial, 0.5), 1);
-  const score03 = Math.min(dSC / Math.max(totalAxial, 0.5), 1);
-  const score04 = Math.min(dDef * 2, 1);
-  const score05 = Math.max(0, 1 - e * 1.5);
-
-  const scores = [
-    { id: '01', val: score01, magnitude: dLR },
-    { id: '02', val: score02, magnitude: dUD },
-    { id: '03', val: score03, magnitude: dSC },
-    { id: '04', val: score04, magnitude: dDef },
-  ];
+function compute(t){
+  const dLR=Math.abs(t.TL-t.TR)/NORM;
+  const dUD=Math.abs(t.TU-t.TD)/NORM;
+  const dSC=Math.abs(t.TS-t.TC)/NORM;
+  const Tavg=(t.TL+t.TR+t.TU+t.TD)/4;
+  const dDef=Math.max(0,(T_REF-Tavg)/NORM);
+  const k=1+dDef;
+  const mag=Math.sqrt(dLR*dLR+dUD*dUD+dSC*dSC);
+  const e=Math.min(mag/Math.sqrt(3)*k,0.99);
+  const deg=Math.round((1-e)*100);
+  const tot=dLR+dUD+dSC||0.001;
+  const s01=Math.min(dLR/Math.max(tot,0.5),1);
+  const s02=Math.min(dUD/Math.max(tot,0.5),1);
+  const s03=Math.min(dSC/Math.max(tot,0.5),1);
+  const s04=Math.min(dDef*2,1);
+  const s05=Math.max(0,1-e*1.5);
   let primary;
-  if (e < 0.15) primary = '05';
-  else primary = scores.sort((a,b) => b.magnitude - a.magnitude)[0].id;
+  if(e<0.12) primary='05';
+  else primary=[{id:'01',v:dLR},{id:'02',v:dUD},{id:'03',v:dSC},{id:'04',v:dDef}].sort((a,b)=>b.v-a.v)[0].id;
+  return{dLR,dUD,dSC,dDef,e,deg,Tavg,scores:{'01':s01,'02':s02,'03':s03,'04':s04,'05':s05},primary};
+}
 
-  return {
-    dLR, dUD, dSC, dDef, k, e, Tavg,
-    scores: { '01': score01, '02': score02, '03': score03, '04': score04, '05': score05 },
-    primary,
+// ── Canvas ──
+const canvas=$('o-canvas');
+const ctx=canvas.getContext('2d');
+const W=460,H=460,CX=230,CY=230;
+
+// Brand colors RGB
+// warm-1 #7A2624 = [122,38,36]  → 열, 뜨거운 쪽
+// warm-2 #954E2B = [149,78,43]  → 전환
+// warm-3 #4E560F = [78,86,15]   → 올리브 딥
+// warm-4 #909A30 = [144,154,48] → 올리브 밝음, 차가운 쪽
+// BG     #EEEDE9 = [238,237,233]
+
+const R1=[122,38,36], R2=[149,78,43], R3=[78,86,15], R4=[144,154,48], BG=[238,237,233];
+const lerp=(a,b,t)=>a+(b-a)*t;
+const clamp=(v,mn,mx)=>Math.max(mn,Math.min(mx,v));
+
+// 그라디언트 기준 설명:
+// 각 blob = {cx,cy: 0-1 위치, r: 0-1 반지름, col: RGB, a: alpha}
+// warm-1 (레드) = 뜨거운 쪽 / warm-4 (올리브) = 차가운 쪽
+// warm-2 = 두 컬러 사이 전환 역할
+//
+// TYPE 01 Off-Center: 수평 방향, 뜨거운 쪽 레드 / 차가운 쪽 올리브
+// TYPE 02 Ascending: 수직 방향, 위(뜨거움) 레드 / 아래(차가움) 올리브
+// TYPE 03 Unreached: 방사형, 바깥 레드(표면) / 중심 올리브(심부 차가움)
+// TYPE 04 Fading: 올리브 단색 계열, 연하고 방향성 없음
+// TYPE 05 Original°: 방사형 균형, 레드-전환-올리브 동심원, 중심 발광 없음
+
+function getBlobs(primary, t){
+  if(primary==='05'){
+    // Original Degree° — 레드(뜨거움)와 올리브(차가운/균형)가 대칭으로 공존
+    // 좌상단 레드 / 우하단 올리브 → 균형을 이루며 맞닿는 구도
+    return[
+      {cx:.30,cy:.30,r:.58,col:R1,a:.55},
+      {cx:.70,cy:.70,r:.58,col:R4,a:.55},
+      {cx:.50,cy:.50,r:.40,col:R2,a:.40},
+      {cx:.30,cy:.70,r:.38,col:R4,a:.30},
+      {cx:.70,cy:.30,r:.38,col:R1,a:.30},
+    ];
+  }
+  if(primary==='04'){
+    // Fading — 전체 저온. 올리브 지배적(차가운 상태), 레드는 거의 없음
+    return[
+      {cx:.5, cy:.5, r:.60,col:R4,a:.38},
+      {cx:.5, cy:.5, r:.40,col:R3,a:.30},
+      {cx:.38,cy:.38,r:.30,col:R4,a:.22},
+      {cx:.62,cy:.60,r:.25,col:R3,a:.18},
+    ];
+  }
+  if(primary==='03'){
+    const sh=(t.TS-t.TC)>0;
+    return sh?[
+      {cx:.5,cy:.5,r:.65,col:R1,a:.72},
+      {cx:.5,cy:.5,r:.44,col:R2,a:.52},
+      {cx:.5,cy:.5,r:.24,col:R4,a:.58},
+    ]:[
+      {cx:.5,cy:.5,r:.65,col:R4,a:.62},
+      {cx:.5,cy:.5,r:.42,col:R2,a:.50},
+      {cx:.5,cy:.5,r:.22,col:R1,a:.68},
+    ];
+  }
+  if(primary==='02'){
+    const th=(t.TU-t.TD)>0;
+    const hy=th?.10:.90, cy2=th?.90:.10;
+    const my=th?.42:.58;
+    return[
+      {cx:.5,cy:hy, r:.56,col:R1,a:.80},
+      {cx:.5,cy:my, r:.44,col:R2,a:.52},
+      {cx:.5,cy:cy2,r:.52,col:R4,a:.65},
+      {cx:.5,cy:cy2,r:.28,col:R4,a:.40},
+    ];
+  }
+  // TYPE 01
+  const lh=(t.TL-t.TR)>0;
+  const hx=lh?.10:.90, cx2=lh?.90:.10, mx=lh?.42:.58;
+  return[
+    {cx:hx, cy:.5,r:.56,col:R1,a:.80},
+    {cx:mx, cy:.5,r:.44,col:R2,a:.52},
+    {cx:cx2,cy:.5,r:.52,col:R4,a:.65},
+    {cx:cx2,cy:.5,r:.28,col:R4,a:.40},
+  ];
+}
+
+let iBlobs=[], tBlobs=[];
+let iRx=210,iRy=210,tRx=210,tRy=210;
+let curPrimary='05', isDashed=false;
+let time=0;
+
+function draw(ts){
+  time=ts;
+  const sp=.055;
+  iRx=lerp(iRx,tRx,sp); iRy=lerp(iRy,tRy,sp);
+  if(iBlobs.length!==tBlobs.length) iBlobs=tBlobs.map(b=>({...b}));
+  else iBlobs=iBlobs.map((b,i)=>{
+    const tb=tBlobs[i]||b;
+    return{cx:lerp(b.cx,tb.cx,sp),cy:lerp(b.cy,tb.cy,sp),r:lerp(b.r,tb.r,sp),a:lerp(b.a,tb.a,sp),col:b.col};
+  });
+
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(CX,CY,iRx,iRy,0,0,Math.PI*2);
+  ctx.clip();
+
+  // BG
+  ctx.fillStyle=`rgb(${BG[0]},${BG[1]},${BG[2]})`;
+  ctx.fillRect(0,0,W,H);
+
+  // Blobs
+  iBlobs.forEach((b,i)=>{
+    const fx=Math.sin(time*.00065+i*2.3)*.022;
+    const fy=Math.cos(time*.00055+i*1.9)*.022;
+    const bx=clamp(b.cx+fx,.05,.95)*W;
+    const by=clamp(b.cy+fy,.05,.95)*H;
+    const br=b.r*W;
+    const[r,g,bl]=b.col;
+    const grd=ctx.createRadialGradient(bx,by,0,bx,by,br);
+    grd.addColorStop(0,`rgba(${r},${g},${bl},${b.a})`);
+    grd.addColorStop(.45,`rgba(${r},${g},${bl},${b.a*.58})`);
+    grd.addColorStop(1,`rgba(${r},${g},${bl},0)`);
+    ctx.fillStyle=grd;
+    ctx.beginPath();
+    ctx.ellipse(bx,by,br,br,0,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // Vignette
+  const vig=ctx.createRadialGradient(CX,CY,iRx*.42,CX,CY,iRx*1.05);
+  vig.addColorStop(0,'rgba(0,0,0,0)');
+  vig.addColorStop(1,'rgba(0,0,0,0.11)');
+  ctx.fillStyle=vig;
+  ctx.beginPath();
+  ctx.ellipse(CX,CY,iRx,iRy,0,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+
+  // Border
+  ctx.beginPath();
+  ctx.ellipse(CX,CY,iRx,iRy,0,0,Math.PI*2);
+  if(isDashed){ctx.setLineDash([3,4]);ctx.strokeStyle='rgba(144,154,48,.38)';ctx.lineWidth=1;}
+  else{ctx.setLineDash([]);ctx.strokeStyle='rgba(26,25,22,.08)';ctx.lineWidth=.8;}
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+// ── Text helpers ──
+function degDesc(deg,primary){
+  if(deg>=88) return '본연의 온도로 돌아왔습니다. 좌우가 고르고, 온기가 심부까지 가득 찬 완전한 균형의 상태입니다.';
+  if(deg>=70) return '균형에 가까워지고 있습니다. 가벼운 유지 관리로 충분한 상태입니다.';
+  if(deg>=50) return '중간 정도의 불균형 상태입니다. 정기적인 뜸 시술이 권장됩니다.';
+  const s={'01':'몸의 중심이 한쪽으로 기울어져 있습니다. 차가운 쪽 혈자리에 뜸을 시술해 균형을 회복합니다.','02':'열이 위로 몰려 있습니다. 하체를 따뜻하게 하면 상부의 열이 자연스럽게 내려와 균형을 찾습니다.','03':'온기가 표면에만 머물고 있습니다. 뜸의 깊은 침투력이 가장 필요한 상태입니다.','04':'몸 전체의 에너지가 낮아져 있습니다. 기혈을 보충하는 장시간 뜸 시술이 필요합니다.'};
+  return s[primary]||'진단 중입니다.';
+}
+function getPx(c,t){
+  const p={
+    '01':{title:'Balance — Off-Center 교정',body:t.TL>t.TR?'<strong>오른쪽이 더 차갑습니다.</strong> 우측 견정·곡지·합곡에 뜸을 시술해 좌우 균형을 회복합니다.':'<strong>왼쪽이 더 차갑습니다.</strong> 좌측 견정·곡지·합곡에 뜸을 시술해 좌우 균형을 회복합니다.'},
+    '02':{title:'Descend — Ascending 교정',body:'<strong>열이 위로 몰린 상태입니다.</strong> 용천·족삼리·관원에 뜸을 시술합니다. 하체를 데우면 상부의 열이 자연히 하강하며 수승화강이 회복됩니다.'},
+    '03':{title:'Penetrate — Unreached 교정',body:'<strong>표면은 따뜻하나 심부가 차갑습니다.</strong> 4~5cm 심부까지 침투하는 뜸의 깊이가 가장 필요한 상태입니다. 신유·명문 혈자리를 집중 시술합니다.'},
+    '04':{title:'Restore — Fading 교정',body:'<strong>전체 에너지가 낮습니다.</strong> 관원·기해·중완에 장시간 뜸을 시술해 기혈을 보충합니다. 꾸준한 방문이 회복의 시작입니다.'},
+    '05':{title:'Original Degree° 유지',body:'균형 상태입니다. 정기적인 스캔으로 상태를 모니터링하며 본연의 온도를 유지합니다.'},
   };
+  return p[c.primary]||p['05'];
 }
 
-function getOrientation(c) {
-  if (c.primary === '03') return { rotation: 0, isRadial: true };
-  if (c.primary === '04') return { rotation: 0, isRadial: false, isDeficient: true };
-  if (c.primary === '05') return { rotation: 0, isRadial: false };
-  const rotation = c.dLR > c.dUD ? 0 : 90;
-  return { rotation, isRadial: false };
-}
+// ── Main update ──
+function update(){
+  const t=readT();
+  const c=compute(t);
 
-function buildGradient(t, c, orientation) {
-  const svg = document.getElementById('ellipse-svg');
-  const oldGrad = svg.querySelector('#grad-dynamic');
-  if (oldGrad) oldGrad.remove();
+  $('eq-lr').textContent=c.dLR.toFixed(3);
+  $('eq-ud').textContent=c.dUD.toFixed(3);
+  $('eq-sc').textContent=c.dSC.toFixed(3);
+  $('eq-def').textContent=c.dDef.toFixed(3);
+  $('eq-e').textContent=c.e.toFixed(3);
+  $('eq-deg').textContent=c.deg;
 
-  const ns = 'http://www.w3.org/2000/svg';
-  const defs = svg.querySelector('defs');
+  $('degree-num').textContent=c.deg;
+  $('degree-fill').style.width=c.deg+'%';
+  $('degree-desc').textContent=degDesc(c.deg,c.primary);
 
-  if (orientation.isDeficient) {
-    const grad = document.createElementNS(ns, 'radialGradient');
-    grad.setAttribute('id', 'grad-dynamic');
-    grad.setAttribute('cx', '50%'); grad.setAttribute('cy', '50%'); grad.setAttribute('r', '50%');
-    grad.innerHTML = `
-      <stop offset="0%" stop-color="${COLOR.accent}" stop-opacity="0.30"/>
-      <stop offset="100%" stop-color="${COLOR.tertiary}" stop-opacity="0.40"/>
-    `;
-    defs.appendChild(grad);
-    return 'url(#grad-dynamic)';
-  }
-
-  if (c.primary === '05') {
-    const grad = document.createElementNS(ns, 'radialGradient');
-    grad.setAttribute('id', 'grad-dynamic');
-    grad.setAttribute('cx', '50%'); grad.setAttribute('cy', '50%'); grad.setAttribute('r', '60%');
-    grad.innerHTML = `
-      <stop offset="0%" stop-color="${COLOR.secondary}" stop-opacity="0.92"/>
-      <stop offset="100%" stop-color="${COLOR.primary}" stop-opacity="0.95"/>
-    `;
-    defs.appendChild(grad);
-    return 'url(#grad-dynamic)';
-  }
-
-  if (orientation.isRadial) {
-    const grad = document.createElementNS(ns, 'radialGradient');
-    grad.setAttribute('id', 'grad-dynamic');
-    grad.setAttribute('cx', '50%'); grad.setAttribute('cy', '50%'); grad.setAttribute('r', '55%');
-    const surfaceHotter = (t.TS - t.TC) > 0;
-    if (surfaceHotter) {
-      grad.innerHTML = `
-        <stop offset="0%" stop-color="${COLOR.cold}" stop-opacity="0.65"/>
-        <stop offset="55%" stop-color="${COLOR.secondary}" stop-opacity="0.75"/>
-        <stop offset="100%" stop-color="${COLOR.primary}" stop-opacity="0.92"/>
-      `;
-    } else {
-      grad.innerHTML = `
-        <stop offset="0%" stop-color="${COLOR.primary}" stop-opacity="0.92"/>
-        <stop offset="55%" stop-color="${COLOR.secondary}" stop-opacity="0.75"/>
-        <stop offset="100%" stop-color="${COLOR.cold}" stop-opacity="0.65"/>
-      `;
-    }
-    defs.appendChild(grad);
-    return 'url(#grad-dynamic)';
-  }
-
-  const grad = document.createElementNS(ns, 'linearGradient');
-  grad.setAttribute('id', 'grad-dynamic');
-
-  const gx = (t.TL - t.TR) / NORM;
-  const gy = (t.TU - t.TD) / NORM;
-
-  let x1, y1, x2, y2;
-  if (Math.abs(gx) > Math.abs(gy)) {
-    x1='0%'; y1='50%'; x2='100%'; y2='50%';
-    if (gx > 0) {
-      grad.innerHTML = `<stop offset="0%" stop-color="${COLOR.primary}" stop-opacity="0.92"/>
-                        <stop offset="50%" stop-color="${COLOR.secondary}" stop-opacity="0.78"/>
-                        <stop offset="100%" stop-color="${COLOR.cold}" stop-opacity="0.72"/>`;
-    } else {
-      grad.innerHTML = `<stop offset="0%" stop-color="${COLOR.cold}" stop-opacity="0.72"/>
-                        <stop offset="50%" stop-color="${COLOR.secondary}" stop-opacity="0.78"/>
-                        <stop offset="100%" stop-color="${COLOR.primary}" stop-opacity="0.92"/>`;
-    }
-  } else {
-    x1='50%'; y1='0%'; x2='50%'; y2='100%';
-    if (gy > 0) {
-      grad.innerHTML = `<stop offset="0%" stop-color="${COLOR.primary}" stop-opacity="0.92"/>
-                        <stop offset="50%" stop-color="${COLOR.secondary}" stop-opacity="0.78"/>
-                        <stop offset="100%" stop-color="${COLOR.cold}" stop-opacity="0.72"/>`;
-    } else {
-      grad.innerHTML = `<stop offset="0%" stop-color="${COLOR.cold}" stop-opacity="0.72"/>
-                        <stop offset="50%" stop-color="${COLOR.secondary}" stop-opacity="0.78"/>
-                        <stop offset="100%" stop-color="${COLOR.primary}" stop-opacity="0.92"/>`;
-    }
-  }
-  grad.setAttribute('x1', x1); grad.setAttribute('y1', y1);
-  grad.setAttribute('x2', x2); grad.setAttribute('y2', y2);
-  defs.appendChild(grad);
-  return 'url(#grad-dynamic)';
-}
-
-function eccDescription(e) {
-  if (e < 0.1) return '균형에 가까운 상태입니다. Original Degree°에 도달했어요.';
-  if (e < 0.3) return '가벼운 불균형. 일상 관리로 회복 가능한 범위입니다.';
-  if (e < 0.55) return '중간 정도의 불균형. 정기적인 뜸 시술이 권장됩니다.';
-  if (e < 0.8) return '꽤 찌그러진 상태. 집중 케어가 필요한 단계입니다.';
-  return '심한 불균형. 즉각적인 처방이 필요합니다.';
-}
-
-function getPrescription(c, t) {
-  switch (c.primary) {
-    case '01':
-      return {
-        title: '음양 균형 회복',
-        body: t.TL > t.TR
-          ? '<strong>오른쪽이 더 차갑습니다.</strong> 우측 견정·곡지·합곡 혈자리에 뜸을 시술해 좌우 균형을 회복합니다.'
-          : '<strong>왼쪽이 더 차갑습니다.</strong> 좌측 견정·곡지·합곡 혈자리에 뜸을 시술해 좌우 균형을 회복합니다.',
-      };
-    case '02':
-      return {
-        title: '수승화강 회복',
-        body: '<strong>상열하한 상태.</strong> 용천·족삼리·관원 혈자리에 뜸을 시술합니다. 하체를 데우면 상부의 열이 자연히 하강합니다.',
-      };
-    case '03':
-      return {
-        title: '심부 침투 시술',
-        body: '<strong>표면은 따뜻하나 심부가 차갑습니다.</strong> 4~5cm 심부까지 침투하는 뜸 시술이 핵심입니다. 신유·명문 혈자리.',
-      };
-    case '04':
-      return {
-        title: '기혈 보충',
-        body: '<strong>전체적인 에너지 부족.</strong> 관원·기해·중완 혈자리에 장시간 뜸을 시술해 기혈을 보충합니다. 회복엔 시간이 필요합니다.',
-      };
-    default:
-      return {
-        title: 'Original Degree° 유지',
-        body: '균형 상태입니다. 정기적 스캔으로 상태를 모니터링하세요.',
-      };
-  }
-}
-
-function update() {
-  const t = readInputs();
-  const c = compute(t);
-  const orientation = getOrientation(c);
-
-  els.eqLr.textContent = c.dLR.toFixed(3);
-  els.eqUd.textContent = c.dUD.toFixed(3);
-  els.eqSc.textContent = c.dSC.toFixed(3);
-  els.eqDef.textContent = c.dDef.toFixed(3);
-  els.eqE.textContent = c.e.toFixed(3);
-
-  els.resultE.textContent = c.e.toFixed(2);
-  els.eBarFill.style.width = (c.e * 100) + '%';
-  els.eDesc.textContent = eccDescription(c.e);
-
-  ['01','02','03','04','05'].forEach(id => {
-    const card = document.querySelector(`.type-card[data-type="${id}"]`);
-    const score = document.getElementById(`score-${id}`);
-    const val = c.scores[id];
-    score.textContent = val.toFixed(2);
-    card.classList.remove('active', 'primary');
-    if (val > 0.3) card.classList.add('active');
-    if (id === c.primary) card.classList.add('primary');
+  ['01','02','03','04','05'].forEach(id=>{
+    const card=document.querySelector(`.tc[data-type="${id}"]`);
+    const score=$(`score-${id}`);
+    const val=c.scores[id];
+    score.textContent=val.toFixed(2);
+    card.classList.remove('active','primary');
+    if(val>.25) card.classList.add('active');
+    if(id===c.primary) card.classList.add('primary');
   });
 
-  const a = 80;
-  const ratio = Math.sqrt(Math.max(0, 1 - c.e * c.e));
-  const b = a * ratio;
+  const MAX=210;
+  const b=MAX*Math.sqrt(Math.max(0,1-c.e*c.e));
+  curPrimary=c.primary; isDashed=c.primary==='04';
 
-  let rx, ry;
-  if (orientation.rotation === 90) { rx = b; ry = a; }
-  else { rx = a; ry = b; }
+  if(c.primary==='04'){tRx=tRy=MAX*.82;}
+  else if(c.primary==='05'){tRx=tRy=MAX;}
+  else if(c.primary==='03'){tRx=tRy=MAX*.91;}
+  else if(c.dUD>=c.dLR){tRx=b;tRy=MAX;}
+  else{tRx=MAX;tRy=b;}
 
-  if (orientation.isDeficient) { rx = a * 0.85; ry = a * 0.85; }
-  if (orientation.isRadial) { rx = a * 0.92; ry = a * 0.92; }
+  tBlobs=getBlobs(c.primary,t);
+  if(iBlobs.length!==tBlobs.length) iBlobs=tBlobs.map(b=>({...b}));
 
-  els.ellipse.setAttribute('rx', rx);
-  els.ellipse.setAttribute('ry', ry);
-
-  if (orientation.isDeficient) {
-    els.ellipse.setAttribute('stroke-dasharray', '3 3');
-    els.ellipse.setAttribute('stroke', COLOR.accent);
-    els.ellipse.setAttribute('stroke-width', '0.8');
-  } else {
-    els.ellipse.setAttribute('stroke-dasharray', 'none');
-    els.ellipse.setAttribute('stroke', '#1f1d1b');
-    els.ellipse.setAttribute('stroke-width', '0.8');
-  }
-
-  const fillUrl = buildGradient(t, c, orientation);
-  els.ellipse.setAttribute('fill', fillUrl);
-  els.centerDot.setAttribute('opacity', c.primary === '05' ? '0.8' : '0.3');
-
-  const presc = getPrescription(c, t);
-  els.prescTitle.textContent = presc.title;
-  els.prescBody.innerHTML = presc.body;
+  const px=getPx(c,t);
+  $('presc-title').textContent=px.title;
+  $('presc-body').innerHTML=px.body;
 }
 
-['tl','tr','tu','td','ts','tc'].forEach(id => {
-  const numInput = document.getElementById(id);
-  const slider = document.querySelector(`input[data-target="${id}"]`);
-  numInput.addEventListener('input', (e) => {
-    if (slider) slider.value = e.target.value;
-    update();
-  });
-  slider.addEventListener('input', (e) => {
-    numInput.value = e.target.value;
-    update();
-  });
-});
-
-document.querySelectorAll('.preset-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const preset = PRESETS[btn.dataset.preset];
-    if (!preset) return;
-    ['tl','tr','tu','td','ts','tc'].forEach(key => {
-      if (preset[key] !== undefined) {
-        const numInput = document.getElementById(key);
-        const slider = document.querySelector(`input[data-target="${key}"]`);
-        if (numInput) numInput.value = preset[key];
-        if (slider) slider.value = preset[key];
-      }
-    });
-    if (preset.name !== undefined)   document.getElementById('p-name').value   = preset.name;
-    if (preset.age !== undefined)    document.getElementById('p-age').value    = preset.age;
-    if (preset.gender !== undefined) document.getElementById('p-gender').value = preset.gender;
-    update();
-  });
+['tl','tr','tu','td','ts','tc'].forEach(id=>{
+  const num=$(id);
+  const slider=document.querySelector(`input[data-target="${id}"]`);
+  num.addEventListener('input',e=>{if(slider)slider.value=e.target.value;update();});
+  if(slider) slider.addEventListener('input',e=>{num.value=e.target.value;update();});
 });
 
 update();
 </script>
-
 </body>
 </html>
