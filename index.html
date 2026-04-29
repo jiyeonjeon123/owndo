@@ -5,162 +5,729 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>owndo° — Thermal Diagnostic</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:        #EEEDE9;
-    --bg-panel:  #E7E6E1;
-    --bg-panel2: #DFDDD7;
-    --ink:       #1a1916;
-    --ink-mid:   #3a3830;
-    --ink-soft:  #6a6858;
-    --ink-faint: #9a9888;
-    --line:      rgba(26,25,22,0.09);
-    --line-dk:   rgba(26,25,22,0.16);
-    --warm-1:    #7A2624;
-    --warm-2:    #954E2B;
-    --warm-3:    #4E560F;
-    --warm-4:    #909A30;
+    /* New palette */
+    --bg:        #F0F0F0;
+    --bg-tint:   #F5F5F2;
+    --ink:       #1a1a1a;
+    --ink-mid:   #4a4a4a;
+    --ink-soft:  #7a7a7a;
+    --ink-faint: #aaaaaa;
+
+    --green:     #61AD7F;
+    --green-dk:  #4a8c64;
+    --green-soft:#9bc8af;
+    --orange:    #F06739;
+    --orange-dk: #d44d20;
+    --red:       #F12A3D;
+    --red-dk:    #c91828;
+
+    --line:      rgba(26,26,26,0.06);
+    --line-dk:   rgba(26,26,26,0.12);
+
+    --glass:     rgba(255,255,255,0.55);
+    --glass-dk:  rgba(255,255,255,0.38);
+
+    --serif:     'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    --sans:      'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    --mono:      'JetBrains Mono', ui-monospace, monospace;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  html,body {
-    background:var(--bg); color:var(--ink);
-    font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;
-    font-weight:400; line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh; overflow-x:hidden;
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
+
+  /* Background atmosphere — soft color washes */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 12% 18%, rgba(97,173,127,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 88% 82%, rgba(240,103,57,0.08), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 92% 12%, rgba(241,42,61,0.04), transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    pointer-events: none;
+    opacity: .5;
+    z-index: 0;
+    mix-blend-mode: multiply;
+  }
+  header, .patient-bar, .console, footer { position: relative; z-index: 1; }
 
   /* HEADER */
   header {
-    padding:22px 48px;
-    display:flex; justify-content:space-between; align-items:center;
-    border-bottom:1px solid var(--line);
-    background:var(--bg);
-    position:sticky; top:0; z-index:100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    background: rgba(240,240,240,0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  .logo-wrap svg { height:20px; width:auto; display:block; }
-  .meta { font-size:10px; color:var(--ink-faint); letter-spacing:0.1em; text-transform:uppercase; }
+  .logo-wrap svg { height: 22px; width: auto; display: block; }
+  .logo-wrap svg path { fill: var(--ink); }
+  .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .meta::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 3px rgba(97,173,127,0.18);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(97,173,127,0.18); }
+    50%      { box-shadow: 0 0 0 6px rgba(97,173,127,0.05); }
+  }
 
   /* PATIENT BAR */
   .patient-bar {
-    padding:16px 48px;
-    display:flex; gap:48px; align-items:end;
-    border-bottom:1px solid var(--line);
-    background:var(--bg-panel);
+    padding: 20px 48px;
+    display: flex;
+    gap: 56px;
+    align-items: end;
+    border-bottom: 1px solid var(--line);
+    background: var(--glass-dk);
+    backdrop-filter: blur(8px);
   }
-  .patient-tag { font-size:9px; letter-spacing:0.2em; color:var(--warm-4); text-transform:uppercase; font-weight:600; line-height:1.6; flex-shrink:0; }
-  .pf { display:flex; flex-direction:column; flex:1; max-width:170px; }
-  .pf label { font-size:10px; color:var(--ink-faint); letter-spacing:0.08em; margin-bottom:4px; text-transform:uppercase; font-weight:500; }
+  .patient-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green-dk);
+    line-height: 1.3;
+    flex-shrink: 0;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .patient-tag small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0;
+    text-transform: none;
+    margin-top: 4px;
+    font-weight: 400;
+  }
+  .pf {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 200px;
+  }
+  .pf label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.16em;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
   .pf input, .pf select {
-    background:transparent; border:none; border-bottom:1px solid var(--line-dk);
-    color:var(--ink); font-family:inherit; font-size:15px; font-weight:400;
-    padding:4px 0; outline:none; transition:border-color .2s;
-    -webkit-appearance:none; appearance:none;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line-dk);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 400;
+    padding: 4px 0;
+    outline: none;
+    transition: border-color .25s;
+    -webkit-appearance: none;
+    appearance: none;
+    letter-spacing: -0.01em;
   }
-  .pf input:focus, .pf select:focus { border-color:var(--warm-3); }
-  .pf input::placeholder { color:transparent; }
-  .pf select option { background:var(--bg-panel); }
+  .pf input:focus, .pf select:focus { border-color: var(--green); }
+  .pf input::placeholder { color: transparent; }
+  .pf select option { background: var(--bg-tint); }
 
   /* CONSOLE */
   .console {
-    max-width:1440px; margin:0 auto;
-    padding:36px 48px 64px;
-    display:grid; grid-template-columns:300px 1fr 300px; gap:28px;
-    align-items:stretch;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 40px 48px 72px;
+    display: grid;
+    grid-template-columns: 320px 1fr 320px;
+    gap: 24px;
+    align-items: stretch;
   }
-  @media(max-width:1100px){
-    .console { grid-template-columns:1fr; padding:24px; }
-    .patient-bar { flex-wrap:wrap; padding:16px 24px; gap:16px; }
-    header { padding:18px 24px; }
+  @media(max-width: 1100px) {
+    .console { grid-template-columns: 1fr; padding: 24px; }
+    .patient-bar { flex-wrap: wrap; padding: 16px 24px; gap: 20px; }
+    header { padding: 18px 24px; }
   }
 
-  /* PANEL */
+  /* PANEL — semi-transparent glass */
   .panel {
-    background:var(--bg-panel); border:1px solid var(--line);
-    padding:22px 18px;
-    display:flex; flex-direction:column;
+    background: var(--glass);
+    backdrop-filter: blur(14px) saturate(1.1);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      0 30px 60px -30px rgba(26,26,26,0.12),
+      0 0 0 1px rgba(26,26,26,0.03);
+    padding: 26px 22px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 2px;
+    position: relative;
   }
-  .p-eye { font-size:9px; letter-spacing:0.22em; color:var(--warm-4); text-transform:uppercase; font-weight:600; margin-bottom:4px; }
-  .p-ttl { font-size:19px; font-weight:500; color:var(--ink); margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--line); letter-spacing:-0.02em; }
+  .panel::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+  }
+  .p-eye {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--green-dk);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .p-eye::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--green);
+  }
+  .p-ttl {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+  .p-ttl em {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--ink-faint);
+    font-size: 0.55em;
+    margin-left: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    vertical-align: 0.15em;
+  }
 
   /* INPUTS */
-  .igrid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; flex:1; }
-  .ig { display:flex; flex-direction:column; }
-  .ig-lbl { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--warm-3); margin-bottom:2px; font-weight:600; }
-  .ig-dsc { font-size:10px; color:var(--ink-faint); margin-bottom:4px; }
-  .iwrap { display:flex; align-items:baseline; border-bottom:1px solid var(--line-dk); padding-bottom:3px; transition:border-color .2s; }
-  .iwrap:focus-within { border-color:var(--warm-3); }
-  .iwrap input { flex:1; background:transparent; border:none; color:var(--ink); font-family:inherit; font-size:19px; font-weight:300; letter-spacing:-0.02em; outline:none; padding:3px 0; width:100%; }
-  .iwrap input::-webkit-outer-spin-button, .iwrap input::-webkit-inner-spin-button { -webkit-appearance:none; }
-  .iwrap input[type=number] { -moz-appearance:textfield; }
-  .iwrap .unit { font-size:10px; color:var(--ink-faint); margin-left:3px; }
-  .slw { margin-top:5px; }
-  input[type="range"] { -webkit-appearance:none; width:100%; height:1px; background:var(--line-dk); outline:none; cursor:pointer; }
-  input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:9px; height:9px; background:var(--warm-3); border-radius:50%; cursor:pointer; transition:transform .15s; }
-  input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.5); }
-  input[type="range"]::-moz-range-thumb { width:9px; height:9px; background:var(--warm-3); border-radius:50%; border:none; cursor:pointer; }
-
-  /* EQ */
-  .eq {
-    background:var(--bg-panel2); border:1px solid var(--line);
-    padding:11px 13px; margin-top:auto;
-    font-size:10px; color:var(--ink-soft); line-height:2;
-    font-variant-numeric:tabular-nums;
+  .igrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 16px;
+    margin-bottom: 22px;
+    flex: 1;
   }
-  .eq .ev { color:var(--warm-2); font-weight:500; }
-  .eq .en { color:var(--warm-3); font-weight:600; }
-  .eq .el { display:inline-block; width:52px; font-size:9px; color:var(--ink-faint); }
+  .ig {
+    display: flex;
+    flex-direction: column;
+    padding: 4px 0;
+  }
+  .ig-lbl {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 2px;
+    font-weight: 500;
+  }
+  .ig-dsc {
+    font-size: 10px;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+    font-family: var(--sans);
+  }
+  .iwrap {
+    display: flex;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line-dk);
+    padding-bottom: 4px;
+    transition: border-color .25s;
+  }
+  .iwrap:focus-within { border-color: var(--orange); }
+  .iwrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    outline: none;
+    padding: 3px 0;
+    width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+  .iwrap input::-webkit-outer-spin-button,
+  .iwrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .iwrap input[type=number] { -moz-appearance: textfield; }
+  .iwrap .unit {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    margin-left: 4px;
+  }
+  .slw { margin-top: 8px; }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 1px;
+    background: var(--line-dk);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 11px; height: 11px;
+    background: var(--orange);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 0 0 0 rgba(240,103,57,0.3);
+  }
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.4);
+    box-shadow: 0 0 0 4px rgba(240,103,57,0.18);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 11px; height: 11px;
+    background: var(--orange);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* EQ — equation panel */
+  .eq {
+    background: rgba(97,173,127,0.06);
+    border: 1px solid rgba(97,173,127,0.18);
+    padding: 14px 16px;
+    margin-top: auto;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-mid);
+    line-height: 1.95;
+    font-variant-numeric: tabular-nums;
+    border-radius: 2px;
+  }
+  .eq .ev { color: var(--orange-dk); font-weight: 500; }
+  .eq .en { color: var(--green-dk); font-weight: 500; }
+  .eq .el {
+    display: inline-block;
+    width: 50px;
+    color: var(--ink-faint);
+    font-size: 9px;
+  }
+  .eq .div {
+    border-top: 1px dashed rgba(97,173,127,0.25);
+    margin-top: 6px;
+    padding-top: 6px;
+  }
 
   /* VIZ */
-  .viz { display:flex; flex-direction:column; align-items:center; }
-  .viz-eye { font-size:9px; letter-spacing:0.25em; color:var(--ink-faint); text-transform:uppercase; font-weight:500; margin-bottom:20px; align-self:flex-start; }
-  .stage { width:100%; max-width:380px; aspect-ratio:1; position:relative; display:flex; align-items:center; justify-content:center; }
-  .stage::before { content:''; position:absolute; inset:7%; border:1px solid rgba(26,25,22,0.06); border-radius:50%; pointer-events:none; }
-  #o-canvas { width:100%; height:100%; }
+  .viz {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 8px;
+  }
+  .viz-eye {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 8px;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .viz-eye::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--ink-faint);
+  }
+  .viz-ttl {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    align-self: flex-start;
+    margin-bottom: 24px;
+    letter-spacing: -0.005em;
+  }
+  .stage {
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stage::before {
+    content: '';
+    position: absolute;
+    inset: 4%;
+    border: 1px dashed rgba(26,26,26,0.07);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .stage::after {
+    content: '';
+    position: absolute;
+    inset: 14%;
+    border: 1px dotted rgba(26,26,26,0.05);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  /* crosshairs */
+  .crosshair {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .crosshair::before,
+  .crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(26,26,26,0.06);
+  }
+  .crosshair::before {
+    left: 50%; top: 8%; bottom: 8%;
+    width: 1px;
+  }
+  .crosshair::after {
+    top: 50%; left: 8%; right: 8%;
+    height: 1px;
+  }
+  #o-canvas { width: 100%; height: 100%; position: relative; z-index: 1; }
 
   /* DEGREE */
-  .deg-wrap { margin-top:28px; width:100%; max-width:380px; }
-  .deg-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; }
-  .deg-lbl { font-size:10px; letter-spacing:0.15em; color:var(--ink-faint); text-transform:uppercase; font-weight:500; }
-  .deg-val { font-size:58px; font-weight:200; color:var(--ink); letter-spacing:-0.05em; line-height:1; transition:all .5s cubic-bezier(.22,1,.36,1); }
-  .deg-val .dsym { font-size:.36em; vertical-align:super; color:var(--warm-3); font-weight:400; }
-  .deg-track { height:1px; background:var(--line-dk); position:relative; margin:7px 0 4px; }
-  .deg-fill { position:absolute; right:0; top:0; height:100%; background:linear-gradient(90deg,var(--warm-1),var(--warm-3),var(--warm-4)); transition:width .6s cubic-bezier(.22,1,.36,1); }
-  .deg-scale { display:flex; justify-content:space-between; font-size:9px; color:var(--ink-faint); letter-spacing:.04em; }
-  .deg-desc { margin-top:12px; font-size:13px; color:var(--ink-mid); line-height:1.8; padding-bottom:16px; border-bottom:1px solid var(--line); }
-
-
+  .deg-wrap {
+    margin-top: 32px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .deg-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .deg-lbl {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .deg-val {
+    font-family: var(--sans);
+    font-size: 84px;
+    font-weight: 200;
+    color: var(--ink);
+    letter-spacing: -0.06em;
+    line-height: 1;
+    transition: all .5s cubic-bezier(.22,1,.36,1);
+    font-variant-numeric: tabular-nums;
+  }
+  .deg-val .dsym {
+    font-size: 0.32em;
+    vertical-align: super;
+    color: var(--green);
+    font-weight: 300;
+    margin-left: 4px;
+    font-style: normal;
+  }
+  .deg-track {
+    height: 2px;
+    background: rgba(26,26,26,0.06);
+    position: relative;
+    margin: 12px 0 6px;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .deg-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--orange) 50%, var(--green) 100%);
+    transition: width .7s cubic-bezier(.22,1,.36,1);
+    border-radius: 1px;
+  }
+  .deg-fill::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(97,173,127,0.2);
+  }
+  .deg-scale {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+  .deg-scale span:nth-child(1) { color: var(--red); }
+  .deg-scale span:nth-child(3) { color: var(--green-dk); }
+  .deg-desc {
+    margin-top: 18px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.4);
+    border-left: 2px solid var(--green);
+    border-radius: 0 2px 2px 0;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
 
   /* RIGHT */
-  .types-lbl { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--warm-4); margin:0 0 10px; font-weight:600; }
-  .tc { border-top:1px solid var(--line); padding:10px 0; opacity:.28; transition:opacity .4s; }
-  .tc.active { opacity:.68; }
-  .tc.primary { opacity:1; }
-  .tc-head { display:flex; align-items:center; gap:8px; margin-bottom:3px; }
-  .tc-tag { font-size:8px; letter-spacing:.1em; padding:2px 6px; border:1px solid var(--line-dk); color:var(--ink-faint); transition:all .3s; font-weight:500; }
-  .tc.primary .tc-tag { border-color:var(--warm-3); color:var(--warm-3); background:rgba(78,86,15,.07); }
-  .tc-name { font-size:15px; font-weight:500; color:var(--ink); letter-spacing:-.01em; }
-  .tc-sub { font-size:10px; color:var(--ink-faint); margin-left:5px; font-weight:400; }
-  .tc-score { margin-left:auto; font-size:10px; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
-  .tc.primary .tc-score { color:var(--warm-3); font-weight:600; }
-  .tc-desc { font-size:11px; color:var(--ink-soft); line-height:1.55; }
+  .types-lbl {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 0 0 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .types-lbl::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line-dk);
+  }
+  .tc {
+    border-top: 1px solid var(--line);
+    padding: 12px 0;
+    opacity: 0.32;
+    transition: all .45s cubic-bezier(.22,1,.36,1);
+    position: relative;
+  }
+  .tc.active { opacity: 0.7; }
+  .tc.primary {
+    opacity: 1;
+    padding-left: 12px;
+    margin-left: -12px;
+    background: linear-gradient(90deg, rgba(97,173,127,0.08), transparent 70%);
+    border-left: 2px solid var(--green);
+    border-top: 1px solid transparent;
+  }
+  .tc-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  .tc-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border: 1px solid var(--line-dk);
+    color: var(--ink-faint);
+    transition: all .35s;
+    font-weight: 500;
+    border-radius: 1px;
+  }
+  .tc.primary .tc-tag {
+    border-color: var(--green);
+    color: var(--green-dk);
+    background: rgba(97,173,127,0.1);
+  }
+  .tc-name {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+  }
+  .tc-sub {
+    font-family: var(--sans);
+    font-size: 10px;
+    color: var(--ink-faint);
+    margin-left: 6px;
+    font-weight: 400;
+  }
+  .tc-score {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .tc.primary .tc-score {
+    color: var(--green-dk);
+    font-weight: 500;
+  }
+  .tc-desc {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    font-family: var(--sans);
+  }
 
   /* PRESCRIPTION */
-  .rx { margin-top:auto; background:var(--warm-1); padding:18px; position:relative; overflow:hidden; }
-  .rx::before { content:'°'; position:absolute; right:8px; top:0; font-size:80px; font-weight:200; color:rgba(255,255,255,.05); line-height:1; pointer-events:none; }
-  .rx-eye { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.36); margin-bottom:5px; font-weight:500; }
-  .rx-ttl { font-size:16px; font-weight:500; color:#fff; margin-bottom:7px; letter-spacing:-.01em; }
-  .rx-body { font-size:12px; line-height:1.75; color:rgba(255,255,255,.72); }
-  .rx-body strong { color:#fff; font-weight:600; }
+  .rx {
+    margin-top: 22px;
+    background:
+      linear-gradient(135deg, rgba(97,173,127,0.92), rgba(74,140,100,0.95));
+    padding: 22px 22px 24px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+    box-shadow:
+      0 20px 40px -20px rgba(74,140,100,0.45),
+      0 0 0 1px rgba(255,255,255,0.1) inset;
+  }
+  .rx::before {
+    content: '°';
+    position: absolute;
+    right: 14px;
+    top: -8px;
+    font-family: var(--sans);
+    font-size: 110px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.12);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .rx::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+  .rx-eye {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 8px;
+    font-weight: 500;
+    position: relative;
+  }
+  .rx-ttl {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+    position: relative;
+    line-height: 1.3;
+  }
+  .rx-body {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.82);
+    position: relative;
+  }
+  .rx-body strong {
+    color: #fff;
+    font-weight: 600;
+  }
 
   /* FOOTER */
-  footer { border-top:1px solid var(--line); padding:16px 48px; display:flex; justify-content:space-between; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); }
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: rgba(240,240,240,0.5);
+    backdrop-filter: blur(8px);
+  }
+  footer span em {
+    font-family: var(--mono);
+    font-style: normal;
+    color: var(--green-dk);
+    font-weight: 500;
+  }
 
-  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-  .console>*{ animation:fadeUp .65s cubic-bezier(.22,1,.36,1) both; }
-  .console>*:nth-child(1){animation-delay:.05s}
-  .console>*:nth-child(2){animation-delay:.14s}
-  .console>*:nth-child(3){animation-delay:.23s}
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .console > * {
+    animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both;
+  }
+  .console > *:nth-child(1) { animation-delay: 0.05s; }
+  .console > *:nth-child(2) { animation-delay: 0.16s; }
+  .console > *:nth-child(3) { animation-delay: 0.27s; }
 </style>
 </head>
 <body>
@@ -168,14 +735,14 @@
 <header>
   <div class="logo-wrap">
     <svg viewBox="0 0 1535 464" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="owndo°">
-      <path d="M148.666 162.227C191.654 162.227 224.69 175.163 247.776 201.035C271.26 226.907 283.002 261.536 283.002 304.922C283.002 348.308 268.872 385.524 240.611 416.57C212.351 447.617 177.324 463.141 135.53 463.141C93.7369 463.141 60.6999 450.005 36.4199 423.735C12.1398 397.067 0 362.437 0 319.848C8.35988e-05 276.86 14.1304 239.843 42.3906 208.797C70.651 177.75 106.076 162.227 148.666 162.227ZM1324.84 5.9707C1323.65 17.5136 1323.05 34.0319 1323.05 55.5254V351.066C1323.05 368.978 1325.83 386.093 1331.41 402.412C1336.98 418.333 1344.14 429.279 1352.9 435.25L1354.1 441.221L1289.02 456.744C1285.04 446.793 1280.06 430.474 1274.09 407.786C1243.44 437.639 1213.99 452.564 1185.73 452.564C1144.33 452.564 1113.48 438.634 1093.18 410.771C1072.88 382.511 1062.73 347.086 1062.73 304.496C1062.73 261.906 1075.67 225.884 1101.54 196.43C1127.81 166.975 1160.85 152.248 1200.65 152.248C1222.94 152.248 1245.03 156.029 1266.93 163.592V95.5283C1266.93 63.6858 1257.77 39.0076 1239.46 21.4941V14.3291L1321.26 0L1324.84 5.9707ZM361.521 165.229C361.522 178.881 371.078 213.013 390.191 267.623L429.395 381.134C459.82 293.758 478.934 234.272 486.735 202.676C478.934 184.342 473.277 173.81 469.767 171.079V164.059L545.246 159.962V166.983C545.246 178.296 555.193 213.208 575.087 271.719L609.519 384.06C635.263 304.875 650.281 256.895 654.572 240.122C662.764 212.817 666.859 189.218 666.859 169.324V162.303H727.801V169.324C718.049 178.296 708.687 197.215 699.715 226.08L641.204 417.411L633.598 448.422L578.598 449.592L568.65 416.24L508.384 260.017L455.725 417.411L449.288 448.422L393.702 449.592L383.756 416.24L307.106 223.739C296.184 195.264 286.237 178.101 277.266 172.25V165.229L361.521 158.207V165.229ZM824.577 157.623C827.761 172.35 830.15 187.276 831.742 202.401C846.469 190.859 857.813 182.301 865.773 176.729C874.132 171.156 884.681 165.783 897.418 160.608C910.155 155.036 922.295 152.249 933.838 152.249C962.496 152.249 984.587 161.404 1000.11 179.714C1016.03 198.023 1023.99 224.294 1023.99 258.524V344.5C1023.99 382.313 1029.96 414.753 1041.9 441.819V445.998H957.72V441.819C964.486 421.918 967.869 395.448 967.869 362.411V271.062C967.869 247.977 964.288 230.662 957.123 219.119C950.356 207.178 936.425 201.208 915.329 201.208C894.233 201.208 867.167 211.357 834.13 231.657V344.5C834.13 383.109 839.901 415.549 851.444 441.819V445.998H771.857V441.819C778.624 421.918 782.007 395.448 782.007 362.411V260.913C782.007 243.798 778.425 227.08 771.261 210.761C764.494 194.043 756.533 182.898 747.378 177.325L746.781 170.161L820.995 151.652L824.577 157.623ZM135.53 196.259C115.231 196.259 99.3095 200.637 87.7666 209.394C80.602 218.548 74.6309 232.48 69.8545 251.188C65.4762 269.895 63.2871 287.807 63.2871 304.922C63.2871 388.111 92.7424 429.705 151.651 429.705C169.961 429.705 184.887 425.526 196.43 417.167C203.992 408.012 209.764 393.882 213.744 374.776C217.724 355.671 219.715 337.361 219.715 319.848C219.715 280.442 213.545 249.993 201.206 228.499C188.867 207.005 166.975 196.259 135.53 196.259ZM1189.31 188.668C1171.4 188.668 1157.67 192.25 1148.11 199.415C1133.39 222.899 1126.02 255.339 1126.02 296.734C1126.02 338.13 1136.57 369.376 1157.67 390.472C1169.21 402.413 1184.93 408.383 1204.83 408.383C1224.73 408.383 1245.43 398.83 1266.93 379.725V211.356C1246.23 196.231 1220.36 188.668 1189.31 188.668ZM1457.23 30.3008C1481.83 30.3008 1500.74 37.7382 1513.96 52.6123C1527.4 67.4866 1534.12 87.3957 1534.12 112.339C1534.12 137.282 1526.04 158.678 1509.86 176.527C1493.68 194.376 1473.63 203.301 1449.71 203.301C1425.78 203.301 1406.87 195.75 1392.97 180.646C1379.07 165.314 1372.13 145.405 1372.12 120.92C1372.12 96.2056 1380.21 74.9234 1396.39 57.0742C1412.57 39.2251 1432.85 30.3008 1457.23 30.3008ZM1449.71 49.8662C1438.09 49.8662 1428.97 52.3836 1422.37 57.418C1418.26 62.6812 1414.85 70.6903 1412.11 81.4453C1409.61 92.2006 1408.35 102.499 1408.35 112.339C1408.35 160.165 1425.21 184.078 1458.94 184.078C1469.42 184.078 1477.96 181.676 1484.57 176.87C1488.9 171.607 1492.2 163.483 1494.48 152.499C1496.76 141.515 1497.9 130.989 1497.9 120.92C1497.9 98.2652 1494.37 80.7595 1487.3 68.4023C1480.24 56.0452 1467.71 49.8662 1449.71 49.8662Z" fill="#1a1916"/>
+      <path d="M148.666 162.227C191.654 162.227 224.69 175.163 247.776 201.035C271.26 226.907 283.002 261.536 283.002 304.922C283.002 348.308 268.872 385.524 240.611 416.57C212.351 447.617 177.324 463.141 135.53 463.141C93.7369 463.141 60.6999 450.005 36.4199 423.735C12.1398 397.067 0 362.437 0 319.848C8.35988e-05 276.86 14.1304 239.843 42.3906 208.797C70.651 177.75 106.076 162.227 148.666 162.227ZM1324.84 5.9707C1323.65 17.5136 1323.05 34.0319 1323.05 55.5254V351.066C1323.05 368.978 1325.83 386.093 1331.41 402.412C1336.98 418.333 1344.14 429.279 1352.9 435.25L1354.1 441.221L1289.02 456.744C1285.04 446.793 1280.06 430.474 1274.09 407.786C1243.44 437.639 1213.99 452.564 1185.73 452.564C1144.33 452.564 1113.48 438.634 1093.18 410.771C1072.88 382.511 1062.73 347.086 1062.73 304.496C1062.73 261.906 1075.67 225.884 1101.54 196.43C1127.81 166.975 1160.85 152.248 1200.65 152.248C1222.94 152.248 1245.03 156.029 1266.93 163.592V95.5283C1266.93 63.6858 1257.77 39.0076 1239.46 21.4941V14.3291L1321.26 0L1324.84 5.9707ZM361.521 165.229C361.522 178.881 371.078 213.013 390.191 267.623L429.395 381.134C459.82 293.758 478.934 234.272 486.735 202.676C478.934 184.342 473.277 173.81 469.767 171.079V164.059L545.246 159.962V166.983C545.246 178.296 555.193 213.208 575.087 271.719L609.519 384.06C635.263 304.875 650.281 256.895 654.572 240.122C662.764 212.817 666.859 189.218 666.859 169.324V162.303H727.801V169.324C718.049 178.296 708.687 197.215 699.715 226.08L641.204 417.411L633.598 448.422L578.598 449.592L568.65 416.24L508.384 260.017L455.725 417.411L449.288 448.422L393.702 449.592L383.756 416.24L307.106 223.739C296.184 195.264 286.237 178.101 277.266 172.25V165.229L361.521 158.207V165.229ZM824.577 157.623C827.761 172.35 830.15 187.276 831.742 202.401C846.469 190.859 857.813 182.301 865.773 176.729C874.132 171.156 884.681 165.783 897.418 160.608C910.155 155.036 922.295 152.249 933.838 152.249C962.496 152.249 984.587 161.404 1000.11 179.714C1016.03 198.023 1023.99 224.294 1023.99 258.524V344.5C1023.99 382.313 1029.96 414.753 1041.9 441.819V445.998H957.72V441.819C964.486 421.918 967.869 395.448 967.869 362.411V271.062C967.869 247.977 964.288 230.662 957.123 219.119C950.356 207.178 936.425 201.208 915.329 201.208C894.233 201.208 867.167 211.357 834.13 231.657V344.5C834.13 383.109 839.901 415.549 851.444 441.819V445.998H771.857V441.819C778.624 421.918 782.007 395.448 782.007 362.411V260.913C782.007 243.798 778.425 227.08 771.261 210.761C764.494 194.043 756.533 182.898 747.378 177.325L746.781 170.161L820.995 151.652L824.577 157.623ZM135.53 196.259C115.231 196.259 99.3095 200.637 87.7666 209.394C80.602 218.548 74.6309 232.48 69.8545 251.188C65.4762 269.895 63.2871 287.807 63.2871 304.922C63.2871 388.111 92.7424 429.705 151.651 429.705C169.961 429.705 184.887 425.526 196.43 417.167C203.992 408.012 209.764 393.882 213.744 374.776C217.724 355.671 219.715 337.361 219.715 319.848C219.715 280.442 213.545 249.993 201.206 228.499C188.867 207.005 166.975 196.259 135.53 196.259ZM1189.31 188.668C1171.4 188.668 1157.67 192.25 1148.11 199.415C1133.39 222.899 1126.02 255.339 1126.02 296.734C1126.02 338.13 1136.57 369.376 1157.67 390.472C1169.21 402.413 1184.93 408.383 1204.83 408.383C1224.73 408.383 1245.43 398.83 1266.93 379.725V211.356C1246.23 196.231 1220.36 188.668 1189.31 188.668ZM1457.23 30.3008C1481.83 30.3008 1500.74 37.7382 1513.96 52.6123C1527.4 67.4866 1534.12 87.3957 1534.12 112.339C1534.12 137.282 1526.04 158.678 1509.86 176.527C1493.68 194.376 1473.63 203.301 1449.71 203.301C1425.78 203.301 1406.87 195.75 1392.97 180.646C1379.07 165.314 1372.13 145.405 1372.12 120.92C1372.12 96.2056 1380.21 74.9234 1396.39 57.0742C1412.57 39.2251 1432.85 30.3008 1457.23 30.3008ZM1449.71 49.8662C1438.09 49.8662 1428.97 52.3836 1422.37 57.418C1418.26 62.6812 1414.85 70.6903 1412.11 81.4453C1409.61 92.2006 1408.35 102.499 1408.35 112.339C1408.35 160.165 1425.21 184.078 1458.94 184.078C1469.42 184.078 1477.96 181.676 1484.57 176.87C1488.9 171.607 1492.2 163.483 1494.48 152.499C1496.76 141.515 1497.9 130.989 1497.9 120.92C1497.9 98.2652 1494.37 80.7595 1487.3 68.4023C1480.24 56.0452 1467.71 49.8662 1449.71 49.8662Z"/>
     </svg>
   </div>
-  <div class="meta">Thermal Diagnostic · v2.0</div>
+  <div class="meta">Thermal Diagnostic · v2.1 · Live</div>
 </header>
 
 <div class="patient-bar">
-  <div class="patient-tag">Patient<br>Profile</div>
+  <div class="patient-tag">Patient Profile<small>환자 정보</small></div>
   <div class="pf"><label>Name</label><input type="text" id="p-name" placeholder=" "></div>
   <div class="pf"><label>Age</label><input type="number" id="p-age" placeholder=" " min="0" max="120"></div>
   <div class="pf">
@@ -192,7 +759,7 @@
   <!-- LEFT -->
   <div class="panel">
     <div class="p-eye">Step 01 · Input</div>
-    <div class="p-ttl">열화상 온도값</div>
+    <div class="p-ttl">열화상 온도값<em>thermal input</em></div>
     <div class="igrid">
       <div class="ig"><div class="ig-lbl">T_L</div><div class="ig-dsc">좌측 평균</div><div class="iwrap"><input type="number" id="tl" value="36.8" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="tl" min="32" max="40" step="0.1" value="36.8"></div></div>
       <div class="ig"><div class="ig-lbl">T_R</div><div class="ig-dsc">우측 평균</div><div class="iwrap"><input type="number" id="tr" value="35.0" step="0.1" min="32" max="40"><span class="unit">°C</span></div><div class="slw"><input type="range" data-target="tr" min="32" max="40" step="0.1" value="35.0"></div></div>
@@ -206,7 +773,7 @@
       <div><span class="el">δ_UD</span>= |<span class="ev">T_U</span>−<span class="ev">T_D</span>|/2 = <span class="en" id="eq-ud">—</span></div>
       <div><span class="el">δ_SC</span>= |<span class="ev">T_S</span>−<span class="ev">T_C</span>|/2 = <span class="en" id="eq-sc">—</span></div>
       <div><span class="el">δ_허</span>= max(0,(36.5−T̄)/2) = <span class="en" id="eq-def">—</span></div>
-      <div style="border-top:1px solid var(--line);margin-top:5px;padding-top:5px">
+      <div class="div">
         <span class="el">e</span>= <span class="en" id="eq-e">—</span> → Degree° = <span class="en" id="eq-deg">—</span>
       </div>
     </div>
@@ -215,7 +782,11 @@
   <!-- CENTER -->
   <div class="viz">
     <div class="viz-eye">The O° · Form × Gradient</div>
-    <div class="stage"><canvas id="o-canvas" width="460" height="460"></canvas></div>
+    <div class="viz-ttl">a portrait of inner climate</div>
+    <div class="stage">
+      <div class="crosshair"></div>
+      <canvas id="o-canvas" width="500" height="500"></canvas>
+    </div>
     <div class="deg-wrap">
       <div class="deg-row">
         <div class="deg-lbl">Degree°</div>
@@ -224,14 +795,13 @@
       <div class="deg-track"><div class="deg-fill" id="degree-fill" style="width:0%"></div></div>
       <div class="deg-scale"><span>0° 불균형</span><span>50°</span><span>100° Original Degree°</span></div>
       <div class="deg-desc" id="degree-desc">온도값을 입력하면 진단이 시작됩니다.</div>
-
     </div>
   </div>
 
   <!-- RIGHT -->
   <div class="panel">
     <div class="p-eye">Step 02 · Diagnosis</div>
-    <div class="p-ttl">상태 판독</div>
+    <div class="p-ttl">상태 판독<em>pattern read</em></div>
     <div class="types-lbl">Pattern Match · 5 States</div>
 
     <div class="tc" data-type="01">
@@ -266,255 +836,325 @@
 
 <footer>
   <span>The O° · Form (e) × Gradient (vector)</span>
-  <span>° = Temperature ∩ Angle ∩ Original</span>
+  <span><em>°</em> = Temperature ∩ Angle ∩ Original</span>
 </footer>
 
 <script>
-const T_REF=36.5, NORM=2.0;
-const $=id=>document.getElementById(id);
+const T_REF = 36.5, NORM = 2.0;
+const $ = id => document.getElementById(id);
 
-function readT(){
-  const v=k=>parseFloat($(k).value)||36.5;
-  return{TL:v('tl'),TR:v('tr'),TU:v('tu'),TD:v('td'),TS:v('ts'),TC:v('tc')};
+function readT() {
+  const v = k => parseFloat($(k).value) || 36.5;
+  return { TL:v('tl'), TR:v('tr'), TU:v('tu'), TD:v('td'), TS:v('ts'), TC:v('tc') };
 }
-function compute(t){
-  const dLR=Math.abs(t.TL-t.TR)/NORM;
-  const dUD=Math.abs(t.TU-t.TD)/NORM;
-  const dSC=Math.abs(t.TS-t.TC)/NORM;
-  const Tavg=(t.TL+t.TR+t.TU+t.TD)/4;
-  const dDef=Math.max(0,(T_REF-Tavg)/NORM);
-  const k=1+dDef;
-  const mag=Math.sqrt(dLR*dLR+dUD*dUD+dSC*dSC);
-  const e=Math.min(mag/Math.sqrt(3)*k,0.99);
-  const deg=Math.round((1-e)*100);
-  const tot=dLR+dUD+dSC||0.001;
-  const s01=Math.min(dLR/Math.max(tot,0.5),1);
-  const s02=Math.min(dUD/Math.max(tot,0.5),1);
-  const s03=Math.min(dSC/Math.max(tot,0.5),1);
-  const s04=Math.min(dDef*2,1);
-  const s05=Math.max(0,1-e*1.5);
+function compute(t) {
+  const dLR = Math.abs(t.TL - t.TR) / NORM;
+  const dUD = Math.abs(t.TU - t.TD) / NORM;
+  const dSC = Math.abs(t.TS - t.TC) / NORM;
+  const Tavg = (t.TL + t.TR + t.TU + t.TD) / 4;
+  const dDef = Math.max(0, (T_REF - Tavg) / NORM);
+  const k = 1 + dDef;
+  const mag = Math.sqrt(dLR*dLR + dUD*dUD + dSC*dSC);
+  const e = Math.min(mag / Math.sqrt(3) * k, 0.99);
+  const deg = Math.round((1 - e) * 100);
+  const tot = dLR + dUD + dSC || 0.001;
+  const s01 = Math.min(dLR / Math.max(tot, 0.5), 1);
+  const s02 = Math.min(dUD / Math.max(tot, 0.5), 1);
+  const s03 = Math.min(dSC / Math.max(tot, 0.5), 1);
+  const s04 = Math.min(dDef * 2, 1);
+  const s05 = Math.max(0, 1 - e * 1.5);
   let primary;
-  if(e<0.12) primary='05';
-  else primary=[{id:'01',v:dLR},{id:'02',v:dUD},{id:'03',v:dSC},{id:'04',v:dDef}].sort((a,b)=>b.v-a.v)[0].id;
-  return{dLR,dUD,dSC,dDef,e,deg,Tavg,scores:{'01':s01,'02':s02,'03':s03,'04':s04,'05':s05},primary};
+  if (e < 0.12) primary = '05';
+  else primary = [{id:'01',v:dLR},{id:'02',v:dUD},{id:'03',v:dSC},{id:'04',v:dDef}].sort((a,b)=>b.v-a.v)[0].id;
+  return { dLR, dUD, dSC, dDef, e, deg, Tavg, scores:{'01':s01,'02':s02,'03':s03,'04':s04,'05':s05}, primary };
 }
 
 // ── Canvas ──
-const canvas=$('o-canvas');
-const ctx=canvas.getContext('2d');
-const W=460,H=460,CX=230,CY=230;
+const canvas = $('o-canvas');
+const ctx = canvas.getContext('2d');
+const W = 500, H = 500, CX = 250, CY = 250;
 
-// Brand colors RGB
-// warm-1 #7A2624 = [122,38,36]  → 열, 뜨거운 쪽
-// warm-2 #954E2B = [149,78,43]  → 전환
-// warm-3 #4E560F = [78,86,15]   → 올리브 딥
-// warm-4 #909A30 = [144,154,48] → 올리브 밝음, 차가운 쪽
-// BG     #EEEDE9 = [238,237,233]
+// New palette in RGB:
+// GREEN  #61AD7F = [97,173,127]   → 균형, 회복, 차가운 쪽 (cool/balance)
+// ORANGE #F06739 = [240,103,57]   → 열의 흐름, 전환 (warm/transition)
+// RED    #F12A3D = [241,42,61]    → 강한 열, 불균형 경고 (hot/alert)
+// BG (cream)    [245,245,242]
+const GREEN  = [97, 173, 127];
+const GREEN_LIGHT = [155, 200, 175];
+const ORANGE = [240, 103, 57];
+const RED    = [241, 42, 61];
+const BG     = [245, 245, 242];
 
-const R1=[122,38,36], R2=[149,78,43], R3=[78,86,15], R4=[144,154,48], BG=[238,237,233];
-const lerp=(a,b,t)=>a+(b-a)*t;
-const clamp=(v,mn,mx)=>Math.max(mn,Math.min(mx,v));
+const lerp = (a,b,t) => a + (b - a) * t;
+const clamp = (v,mn,mx) => Math.max(mn, Math.min(mx, v));
 
-// 그라디언트 기준 설명:
-// 각 blob = {cx,cy: 0-1 위치, r: 0-1 반지름, col: RGB, a: alpha}
-// warm-1 (레드) = 뜨거운 쪽 / warm-4 (올리브) = 차가운 쪽
-// warm-2 = 두 컬러 사이 전환 역할
-//
-// TYPE 01 Off-Center: 수평 방향, 뜨거운 쪽 레드 / 차가운 쪽 올리브
-// TYPE 02 Ascending: 수직 방향, 위(뜨거움) 레드 / 아래(차가움) 올리브
-// TYPE 03 Unreached: 방사형, 바깥 레드(표면) / 중심 올리브(심부 차가움)
-// TYPE 04 Fading: 올리브 단색 계열, 연하고 방향성 없음
-// TYPE 05 Original°: 방사형 균형, 레드-전환-올리브 동심원, 중심 발광 없음
-
-function getBlobs(primary, t){
-  if(primary==='05'){
-    // Original Degree° — 레드(뜨거움)와 올리브(차가운/균형)가 대칭으로 공존
-    // 좌상단 레드 / 우하단 올리브 → 균형을 이루며 맞닿는 구도
-    return[
-      {cx:.30,cy:.30,r:.58,col:R1,a:.55},
-      {cx:.70,cy:.70,r:.58,col:R4,a:.55},
-      {cx:.50,cy:.50,r:.40,col:R2,a:.40},
-      {cx:.30,cy:.70,r:.38,col:R4,a:.30},
-      {cx:.70,cy:.30,r:.38,col:R1,a:.30},
+function getBlobs(primary, t) {
+  if (primary === '05') {
+    // Original Degree° — 완벽한 균형 = 완벽한 동심원
+    // 중심에 따뜻한 코어(오렌지가 아주 옅게 빛나며 "기"의 중심)
+    // 그 위로 그린이 차분하게 펼쳐짐 (회복/균형의 색)
+    // 모든 blob이 같은 중심(.50, .50)을 공유 → 방향성 없음
+    return [
+      { cx:.50, cy:.50, r:.72, col:GREEN,       a:.42 },
+      { cx:.50, cy:.50, r:.55, col:GREEN,       a:.50 },
+      { cx:.50, cy:.50, r:.38, col:GREEN_LIGHT, a:.55 },
+      { cx:.50, cy:.50, r:.22, col:ORANGE,      a:.20 },
+      { cx:.50, cy:.50, r:.10, col:ORANGE,      a:.32 },
     ];
   }
-  if(primary==='04'){
-    // Fading — 전체 저온. 올리브 지배적(차가운 상태), 레드는 거의 없음
-    return[
-      {cx:.5, cy:.5, r:.60,col:R4,a:.38},
-      {cx:.5, cy:.5, r:.40,col:R3,a:.30},
-      {cx:.38,cy:.38,r:.30,col:R4,a:.22},
-      {cx:.62,cy:.60,r:.25,col:R3,a:.18},
+  if (primary === '04') {
+    // Fading — 전체 저온, 색이 빠진 듯한 분위기. 옅은 그린만 잔잔히.
+    return [
+      { cx:.50, cy:.50, r:.62, col:GREEN_LIGHT, a:.32 },
+      { cx:.42, cy:.45, r:.32, col:GREEN_LIGHT, a:.22 },
+      { cx:.60, cy:.58, r:.28, col:GREEN,       a:.18 },
+      { cx:.50, cy:.50, r:.18, col:ORANGE,      a:.10 },
     ];
   }
-  if(primary==='03'){
-    const sh=(t.TS-t.TC)>0;
-    return sh?[
-      {cx:.5,cy:.5,r:.65,col:R1,a:.72},
-      {cx:.5,cy:.5,r:.44,col:R2,a:.52},
-      {cx:.5,cy:.5,r:.24,col:R4,a:.58},
-    ]:[
-      {cx:.5,cy:.5,r:.65,col:R4,a:.62},
-      {cx:.5,cy:.5,r:.42,col:R2,a:.50},
-      {cx:.5,cy:.5,r:.22,col:R1,a:.68},
+  if (primary === '03') {
+    // Unreached — 표열이한. 표면(밖)과 심부(안)의 대조
+    const surfaceHot = (t.TS - t.TC) > 0;
+    return surfaceHot ? [
+      // 바깥은 붉음(표면 열), 중심은 그린(심부 차가움)
+      { cx:.50, cy:.50, r:.66, col:RED,    a:.55 },
+      { cx:.50, cy:.50, r:.46, col:ORANGE, a:.55 },
+      { cx:.50, cy:.50, r:.26, col:GREEN,  a:.65 },
+    ] : [
+      // 거꾸로: 표면 차갑고 심부 뜨거움 (드물지만 가능)
+      { cx:.50, cy:.50, r:.66, col:GREEN,  a:.50 },
+      { cx:.50, cy:.50, r:.44, col:ORANGE, a:.50 },
+      { cx:.50, cy:.50, r:.24, col:RED,    a:.65 },
     ];
   }
-  if(primary==='02'){
-    const th=(t.TU-t.TD)>0;
-    const hy=th?.10:.90, cy2=th?.90:.10;
-    const my=th?.42:.58;
-    return[
-      {cx:.5,cy:hy, r:.56,col:R1,a:.80},
-      {cx:.5,cy:my, r:.44,col:R2,a:.52},
-      {cx:.5,cy:cy2,r:.52,col:R4,a:.65},
-      {cx:.5,cy:cy2,r:.28,col:R4,a:.40},
+  if (primary === '02') {
+    // Ascending — 수직 분리. 위/아래 어느쪽이 뜨거운지에 따라 방향
+    const topHot = (t.TU - t.TD) > 0;
+    const hotY  = topHot ? .12 : .88;
+    const coolY = topHot ? .88 : .12;
+    const midY  = topHot ? .42 : .58;
+    return [
+      { cx:.50, cy:hotY,  r:.58, col:RED,    a:.62 },
+      { cx:.50, cy:hotY,  r:.40, col:ORANGE, a:.55 },
+      { cx:.50, cy:midY,  r:.42, col:ORANGE, a:.32 },
+      { cx:.50, cy:coolY, r:.55, col:GREEN,  a:.60 },
+      { cx:.50, cy:coolY, r:.30, col:GREEN,  a:.40 },
     ];
   }
-  // TYPE 01
-  const lh=(t.TL-t.TR)>0;
-  const hx=lh?.10:.90, cx2=lh?.90:.10, mx=lh?.42:.58;
-  return[
-    {cx:hx, cy:.5,r:.56,col:R1,a:.80},
-    {cx:mx, cy:.5,r:.44,col:R2,a:.52},
-    {cx:cx2,cy:.5,r:.52,col:R4,a:.65},
-    {cx:cx2,cy:.5,r:.28,col:R4,a:.40},
+  // TYPE 01 Off-Center — 좌우 분리
+  const leftHot = (t.TL - t.TR) > 0;
+  const hotX  = leftHot ? .12 : .88;
+  const coolX = leftHot ? .88 : .12;
+  const midX  = leftHot ? .42 : .58;
+  return [
+    { cx:hotX,  cy:.50, r:.58, col:RED,    a:.62 },
+    { cx:hotX,  cy:.50, r:.40, col:ORANGE, a:.55 },
+    { cx:midX,  cy:.50, r:.42, col:ORANGE, a:.32 },
+    { cx:coolX, cy:.50, r:.55, col:GREEN,  a:.60 },
+    { cx:coolX, cy:.50, r:.30, col:GREEN,  a:.40 },
   ];
 }
 
-let iBlobs=[], tBlobs=[];
-let iRx=210,iRy=210,tRx=210,tRy=210;
-let curPrimary='05', isDashed=false;
-let time=0;
+let iBlobs = [], tBlobs = [];
+let iRx = 230, iRy = 230, tRx = 230, tRy = 230;
+let curPrimary = '05', isDashed = false;
+let time = 0;
 
-function draw(ts){
-  time=ts;
-  const sp=.055;
-  iRx=lerp(iRx,tRx,sp); iRy=lerp(iRy,tRy,sp);
-  if(iBlobs.length!==tBlobs.length) iBlobs=tBlobs.map(b=>({...b}));
-  else iBlobs=iBlobs.map((b,i)=>{
-    const tb=tBlobs[i]||b;
-    return{cx:lerp(b.cx,tb.cx,sp),cy:lerp(b.cy,tb.cy,sp),r:lerp(b.r,tb.r,sp),a:lerp(b.a,tb.a,sp),col:b.col};
-  });
+function draw(ts) {
+  time = ts;
+  const sp = .055;
+  iRx = lerp(iRx, tRx, sp);
+  iRy = lerp(iRy, tRy, sp);
 
-  ctx.clearRect(0,0,W,H);
+  if (iBlobs.length !== tBlobs.length) {
+    iBlobs = tBlobs.map(b => ({ ...b }));
+  } else {
+    iBlobs = iBlobs.map((b, i) => {
+      const tb = tBlobs[i] || b;
+      return {
+        cx:  lerp(b.cx, tb.cx, sp),
+        cy:  lerp(b.cy, tb.cy, sp),
+        r:   lerp(b.r,  tb.r,  sp),
+        a:   lerp(b.a,  tb.a,  sp),
+        col: b.col,
+      };
+    });
+  }
+
+  ctx.clearRect(0, 0, W, H);
   ctx.save();
   ctx.beginPath();
-  ctx.ellipse(CX,CY,iRx,iRy,0,0,Math.PI*2);
+  ctx.ellipse(CX, CY, iRx, iRy, 0, 0, Math.PI * 2);
   ctx.clip();
 
-  // BG
-  ctx.fillStyle=`rgb(${BG[0]},${BG[1]},${BG[2]})`;
-  ctx.fillRect(0,0,W,H);
+  // BG (cream, semi-transparent through clip)
+  ctx.fillStyle = `rgba(${BG[0]},${BG[1]},${BG[2]},0.6)`;
+  ctx.fillRect(0, 0, W, H);
 
-  // Blobs
-  iBlobs.forEach((b,i)=>{
-    const fx=Math.sin(time*.00065+i*2.3)*.022;
-    const fy=Math.cos(time*.00055+i*1.9)*.022;
-    const bx=clamp(b.cx+fx,.05,.95)*W;
-    const by=clamp(b.cy+fy,.05,.95)*H;
-    const br=b.r*W;
-    const[r,g,bl]=b.col;
-    const grd=ctx.createRadialGradient(bx,by,0,bx,by,br);
-    grd.addColorStop(0,`rgba(${r},${g},${bl},${b.a})`);
-    grd.addColorStop(.45,`rgba(${r},${g},${bl},${b.a*.58})`);
-    grd.addColorStop(1,`rgba(${r},${g},${bl},0)`);
-    ctx.fillStyle=grd;
+  // Blobs with organic motion (almost still when balanced)
+  const motionScale = curPrimary === '05' ? 0.003 : 0.02;
+  iBlobs.forEach((b, i) => {
+    const fx = Math.sin(time * .00065 + i * 2.3) * motionScale;
+    const fy = Math.cos(time * .00055 + i * 1.9) * motionScale;
+    const bx = clamp(b.cx + fx, .05, .95) * W;
+    const by = clamp(b.cy + fy, .05, .95) * H;
+    const br = b.r * W;
+    const [r, g, bl] = b.col;
+    const grd = ctx.createRadialGradient(bx, by, 0, bx, by, br);
+    grd.addColorStop(0,   `rgba(${r},${g},${bl},${b.a})`);
+    grd.addColorStop(.5,  `rgba(${r},${g},${bl},${b.a * .55})`);
+    grd.addColorStop(1,   `rgba(${r},${g},${bl},0)`);
+    ctx.fillStyle = grd;
     ctx.beginPath();
-    ctx.ellipse(bx,by,br,br,0,0,Math.PI*2);
+    ctx.ellipse(bx, by, br, br, 0, 0, Math.PI * 2);
     ctx.fill();
   });
 
-  // Vignette
-  const vig=ctx.createRadialGradient(CX,CY,iRx*.42,CX,CY,iRx*1.05);
-  vig.addColorStop(0,'rgba(0,0,0,0)');
-  vig.addColorStop(1,'rgba(0,0,0,0.11)');
-  ctx.fillStyle=vig;
+  // Inner glow rim — soft white halo at edge
+  const rim = ctx.createRadialGradient(CX, CY, iRx * .85, CX, CY, iRx);
+  rim.addColorStop(0, 'rgba(255,255,255,0)');
+  rim.addColorStop(1, 'rgba(255,255,255,0.18)');
+  ctx.fillStyle = rim;
   ctx.beginPath();
-  ctx.ellipse(CX,CY,iRx,iRy,0,0,Math.PI*2);
+  ctx.ellipse(CX, CY, iRx, iRy, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Subtle vignette
+  const vig = ctx.createRadialGradient(CX, CY, iRx * .5, CX, CY, iRx * 1.05);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.06)');
+  ctx.fillStyle = vig;
+  ctx.beginPath();
+  ctx.ellipse(CX, CY, iRx, iRy, 0, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.restore();
 
-  // Border
+  // Outer border ring
   ctx.beginPath();
-  ctx.ellipse(CX,CY,iRx,iRy,0,0,Math.PI*2);
-  if(isDashed){ctx.setLineDash([3,4]);ctx.strokeStyle='rgba(144,154,48,.38)';ctx.lineWidth=1;}
-  else{ctx.setLineDash([]);ctx.strokeStyle='rgba(26,25,22,.08)';ctx.lineWidth=.8;}
+  ctx.ellipse(CX, CY, iRx, iRy, 0, 0, Math.PI * 2);
+  if (isDashed) {
+    ctx.setLineDash([2, 5]);
+    ctx.strokeStyle = 'rgba(155,200,175,0.55)';
+    ctx.lineWidth = 1;
+  } else {
+    ctx.setLineDash([]);
+    ctx.strokeStyle = 'rgba(26,26,26,0.1)';
+    ctx.lineWidth = 0.8;
+  }
   ctx.stroke();
-  ctx.setLineDash([]);
 
+  // Outer faint guide (only when balanced)
+  if (curPrimary === '05') {
+    ctx.beginPath();
+    ctx.ellipse(CX, CY, iRx + 8, iRy + 8, 0, 0, Math.PI * 2);
+    ctx.setLineDash([1, 4]);
+    ctx.strokeStyle = 'rgba(97,173,127,0.35)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+
+  ctx.setLineDash([]);
   requestAnimationFrame(draw);
 }
 requestAnimationFrame(draw);
 
 // ── Text helpers ──
-function degDesc(deg,primary){
-  if(deg>=88) return '본연의 온도로 돌아왔습니다. 좌우가 고르고, 온기가 심부까지 가득 찬 완전한 균형의 상태입니다.';
-  if(deg>=70) return '균형에 가까워지고 있습니다. 가벼운 유지 관리로 충분한 상태입니다.';
-  if(deg>=50) return '중간 정도의 불균형 상태입니다. 정기적인 뜸 시술이 권장됩니다.';
-  const s={'01':'몸의 중심이 한쪽으로 기울어져 있습니다. 차가운 쪽 혈자리에 뜸을 시술해 균형을 회복합니다.','02':'열이 위로 몰려 있습니다. 하체를 따뜻하게 하면 상부의 열이 자연스럽게 내려와 균형을 찾습니다.','03':'온기가 표면에만 머물고 있습니다. 뜸의 깊은 침투력이 가장 필요한 상태입니다.','04':'몸 전체의 에너지가 낮아져 있습니다. 기혈을 보충하는 장시간 뜸 시술이 필요합니다.'};
-  return s[primary]||'진단 중입니다.';
-}
-function getPx(c,t){
-  const p={
-    '01':{title:'Balance — Off-Center 교정',body:t.TL>t.TR?'<strong>오른쪽이 더 차갑습니다.</strong> 우측 견정·곡지·합곡에 뜸을 시술해 좌우 균형을 회복합니다.':'<strong>왼쪽이 더 차갑습니다.</strong> 좌측 견정·곡지·합곡에 뜸을 시술해 좌우 균형을 회복합니다.'},
-    '02':{title:'Descend — Ascending 교정',body:'<strong>열이 위로 몰린 상태입니다.</strong> 용천·족삼리·관원에 뜸을 시술합니다. 하체를 데우면 상부의 열이 자연히 하강하며 수승화강이 회복됩니다.'},
-    '03':{title:'Penetrate — Unreached 교정',body:'<strong>표면은 따뜻하나 심부가 차갑습니다.</strong> 4~5cm 심부까지 침투하는 뜸의 깊이가 가장 필요한 상태입니다. 신유·명문 혈자리를 집중 시술합니다.'},
-    '04':{title:'Restore — Fading 교정',body:'<strong>전체 에너지가 낮습니다.</strong> 관원·기해·중완에 장시간 뜸을 시술해 기혈을 보충합니다. 꾸준한 방문이 회복의 시작입니다.'},
-    '05':{title:'Original Degree° 유지',body:'균형 상태입니다. 정기적인 스캔으로 상태를 모니터링하며 본연의 온도를 유지합니다.'},
+function degDesc(deg, primary) {
+  if (deg >= 88) return '본연의 온도로 돌아왔습니다. 좌우가 고르고, 온기가 심부까지 가득 찬 완전한 균형의 상태입니다.';
+  if (deg >= 70) return '균형에 가까워지고 있습니다. 가벼운 유지 관리로 충분한 상태입니다.';
+  if (deg >= 50) return '중간 정도의 불균형 상태입니다. 정기적인 뜸 시술이 권장됩니다.';
+  const s = {
+    '01':'몸의 중심이 한쪽으로 기울어져 있습니다. 차가운 쪽 혈자리에 뜸을 시술해 균형을 회복합니다.',
+    '02':'열이 위로 몰려 있습니다. 하체를 따뜻하게 하면 상부의 열이 자연스럽게 내려와 균형을 찾습니다.',
+    '03':'온기가 표면에만 머물고 있습니다. 뜸의 깊은 침투력이 가장 필요한 상태입니다.',
+    '04':'몸 전체의 에너지가 낮아져 있습니다. 기혈을 보충하는 장시간 뜸 시술이 필요합니다.',
   };
-  return p[c.primary]||p['05'];
+  return s[primary] || '진단 중입니다.';
+}
+function getPx(c, t) {
+  const p = {
+    '01': {
+      title: 'Balance — Off-Center 교정',
+      body: t.TL > t.TR
+        ? '<strong>오른쪽이 더 차갑습니다.</strong> 우측 견정·곡지·합곡에 뜸을 시술해 좌우 균형을 회복합니다.'
+        : '<strong>왼쪽이 더 차갑습니다.</strong> 좌측 견정·곡지·합곡에 뜸을 시술해 좌우 균형을 회복합니다.',
+    },
+    '02': {
+      title: 'Descend — Ascending 교정',
+      body: '<strong>열이 위로 몰린 상태입니다.</strong> 용천·족삼리·관원에 뜸을 시술합니다. 하체를 데우면 상부의 열이 자연히 하강하며 수승화강이 회복됩니다.',
+    },
+    '03': {
+      title: 'Penetrate — Unreached 교정',
+      body: '<strong>표면은 따뜻하나 심부가 차갑습니다.</strong> 4~5cm 심부까지 침투하는 뜸의 깊이가 가장 필요한 상태입니다. 신유·명문 혈자리를 집중 시술합니다.',
+    },
+    '04': {
+      title: 'Restore — Fading 교정',
+      body: '<strong>전체 에너지가 낮습니다.</strong> 관원·기해·중완에 장시간 뜸을 시술해 기혈을 보충합니다. 꾸준한 방문이 회복의 시작입니다.',
+    },
+    '05': {
+      title: 'Original Degree° 유지',
+      body: '균형 상태입니다. 정기적인 스캔으로 상태를 모니터링하며 본연의 온도를 유지합니다.',
+    },
+  };
+  return p[c.primary] || p['05'];
 }
 
 // ── Main update ──
-function update(){
-  const t=readT();
-  const c=compute(t);
+function update() {
+  const t = readT();
+  const c = compute(t);
 
-  $('eq-lr').textContent=c.dLR.toFixed(3);
-  $('eq-ud').textContent=c.dUD.toFixed(3);
-  $('eq-sc').textContent=c.dSC.toFixed(3);
-  $('eq-def').textContent=c.dDef.toFixed(3);
-  $('eq-e').textContent=c.e.toFixed(3);
-  $('eq-deg').textContent=c.deg;
+  $('eq-lr').textContent  = c.dLR.toFixed(3);
+  $('eq-ud').textContent  = c.dUD.toFixed(3);
+  $('eq-sc').textContent  = c.dSC.toFixed(3);
+  $('eq-def').textContent = c.dDef.toFixed(3);
+  $('eq-e').textContent   = c.e.toFixed(3);
+  $('eq-deg').textContent = c.deg;
 
-  $('degree-num').textContent=c.deg;
-  $('degree-fill').style.width=c.deg+'%';
-  $('degree-desc').textContent=degDesc(c.deg,c.primary);
+  $('degree-num').textContent = c.deg;
+  $('degree-fill').style.width = c.deg + '%';
+  $('degree-desc').textContent = degDesc(c.deg, c.primary);
 
-  ['01','02','03','04','05'].forEach(id=>{
-    const card=document.querySelector(`.tc[data-type="${id}"]`);
-    const score=$(`score-${id}`);
-    const val=c.scores[id];
-    score.textContent=val.toFixed(2);
-    card.classList.remove('active','primary');
-    if(val>.25) card.classList.add('active');
-    if(id===c.primary) card.classList.add('primary');
+  ['01','02','03','04','05'].forEach(id => {
+    const card  = document.querySelector(`.tc[data-type="${id}"]`);
+    const score = $(`score-${id}`);
+    const val   = c.scores[id];
+    score.textContent = val.toFixed(2);
+    card.classList.remove('active', 'primary');
+    if (val > .25)        card.classList.add('active');
+    if (id === c.primary) card.classList.add('primary');
   });
 
-  const MAX=210;
-  const b=MAX*Math.sqrt(Math.max(0,1-c.e*c.e));
-  curPrimary=c.primary; isDashed=c.primary==='04';
+  const MAX = 230;
+  const b = MAX * Math.sqrt(Math.max(0, 1 - c.e * c.e));
+  curPrimary = c.primary;
+  isDashed = (c.primary === '04');
 
-  if(c.primary==='04'){tRx=tRy=MAX*.82;}
-  else if(c.primary==='05'){tRx=tRy=MAX;}
-  else if(c.primary==='03'){tRx=tRy=MAX*.91;}
-  else if(c.dUD>=c.dLR){tRx=b;tRy=MAX;}
-  else{tRx=MAX;tRy=b;}
+  if (c.primary === '04') { tRx = tRy = MAX * 0.82; }
+  else if (c.primary === '05') { tRx = tRy = MAX; }
+  else if (c.primary === '03') { tRx = tRy = MAX * 0.91; }
+  else if (c.dUD >= c.dLR) { tRx = b;   tRy = MAX; }
+  else                     { tRx = MAX; tRy = b;   }
 
-  tBlobs=getBlobs(c.primary,t);
-  if(iBlobs.length!==tBlobs.length) iBlobs=tBlobs.map(b=>({...b}));
+  tBlobs = getBlobs(c.primary, t);
+  if (iBlobs.length !== tBlobs.length) iBlobs = tBlobs.map(b => ({ ...b }));
 
-  const px=getPx(c,t);
-  $('presc-title').textContent=px.title;
-  $('presc-body').innerHTML=px.body;
+  const px = getPx(c, t);
+  $('presc-title').textContent = px.title;
+  $('presc-body').innerHTML    = px.body;
 }
 
-['tl','tr','tu','td','ts','tc'].forEach(id=>{
-  const num=$(id);
-  const slider=document.querySelector(`input[data-target="${id}"]`);
-  num.addEventListener('input',e=>{if(slider)slider.value=e.target.value;update();});
-  if(slider) slider.addEventListener('input',e=>{num.value=e.target.value;update();});
+['tl','tr','tu','td','ts','tc'].forEach(id => {
+  const num = $(id);
+  const slider = document.querySelector(`input[data-target="${id}"]`);
+  num.addEventListener('input', e => {
+    if (slider) slider.value = e.target.value;
+    update();
+  });
+  if (slider) slider.addEventListener('input', e => {
+    num.value = e.target.value;
+    update();
+  });
 });
 
 update();
